@@ -16,10 +16,11 @@
 #include "ErrorCode.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include <libswresample/swresample.h>
-#include <SLES/OpenSLES.h>
-#include <SLES/OpenSLES_Android.h>
+    #include "libavcodec/avcodec.h"
+    #include <libswresample/swresample.h>
+    #include <SLES/OpenSLES.h>
+    #include <SLES/OpenSLES_Android.h>
+    #include <libavutil/time.h>
 };
 
 class AudioOutput {

@@ -80,9 +80,9 @@ void AudioOutput::initOpenSLES() {
     };
     SLDataSource slDataSource = {&android_queue, &pcm};
 
-    const int LENGTH = 2;
-    const SLInterfaceID ids[LENGTH] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME};
-    const SLboolean req[LENGTH] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
+    const int LENGTH = 3;
+    const SLInterfaceID ids[LENGTH] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME, SL_IID_PLAYBACKRATE};
+    const SLboolean req[LENGTH] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
 
     (*engineEngine)->CreateAudioPlayer(
             engineEngine,
@@ -259,13 +259,18 @@ int AudioOutput::resample() {
         if (audio == NULL) {
             return 0;
         }
+        if (playStatus->isSeek()) {
+            av_usleep(1000 * 100);
+            continue;
+        }
         if(audio->queue->size() == 0) { // 加载中
             if(!playStatus->isLoad()) {
                 playStatus->setLoad(true);
                 javaCaller->callJavaMethod(true, EVENT_LOADING, 0, 0);
             }
+            av_usleep(1000 * 100);
             continue;
-        } else{ // 加载完成
+        } else { // 加载完成
             if(playStatus->isLoad()) {
                 playStatus->setLoad(false);
                 javaCaller->callJavaMethod(true, EVENT_LOADING, 1, 0);
@@ -300,7 +305,7 @@ int AudioOutput::resample() {
                     avFrame->sample_rate,
                     NULL, NULL
             );
-            if(!swr_ctx || swr_init(swr_ctx) <0) {
+            if(!swr_ctx || swr_init(swr_ctx) < 0) {
                 av_packet_free(&avPacket);
                 av_free(avPacket);
                 avPacket = NULL;
