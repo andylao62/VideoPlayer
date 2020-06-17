@@ -7,7 +7,7 @@
 
 #include <jni.h>
 #include <linux/stddef.h>
-#include "../Log.h"
+#include "Log.h"
 
 class JavaCaller {
 

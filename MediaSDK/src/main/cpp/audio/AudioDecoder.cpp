@@ -281,6 +281,9 @@ void AudioDecoder::seek(int64_t second) {
     playStatus->setSeek(false);
 }
 
+void AudioDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {
+}
+
 
 
 

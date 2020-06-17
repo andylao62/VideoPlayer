@@ -11,7 +11,7 @@
 #include "Audio.h"
 #include "PlayStatus.h"
 #include "JavaCaller.h"
-#include "../Log.h"
+#include "Log.h"
 #include "EventCode.h"
 #include "ErrorCode.h"
 

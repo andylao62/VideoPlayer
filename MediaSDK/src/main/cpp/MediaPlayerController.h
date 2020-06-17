@@ -12,6 +12,10 @@
 #define AUDIOPLAYER_AUDIOPLAYERCONTROLLER_H
 
 
+#include "MediaLoader.h"
+#include "MediaDecoder.h"
+#include "MediaOutput.h"
+#include "Media.h"
 #include "Audio.h"
 #include "PlayStatus.h"
 #include "AudioDecoder.h"
@@ -20,16 +24,23 @@
 
 class MediaPlayerController {
     private:
-        Audio *audio = NULL;
         PlayStatus *playStatus = NULL;
-        AudioDecoder *audioDecoder = NULL;
-        AudioOutput *audioOutput = NULL;
-        JavaCaller *javaCaller = NULL;
+        Media *media = NULL;
+        MediaDecoder *decoder = NULL;
+        MediaOutput *output = NULL;
+
     private:
         pthread_mutex_t mutexReleasing;
         pthread_mutex_t mutexWorking;
         bool releasing = false;
         bool working = false;
+
+    public:
+        JavaCaller *javaCaller = NULL;
+        pthread_t threadDecode;
+        pthread_mutex_t mutexDecode;
+        MediaLoader *loader = NULL;
+        bool exit = false;
     private:
         bool isReleasing();
         void setReleasing(bool releasing);

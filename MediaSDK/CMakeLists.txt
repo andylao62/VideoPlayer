@@ -1,7 +1,12 @@
 
     cmake_minimum_required(VERSION 3.6.0)
 
+    include_directories(src/main/cpp)
     include_directories(src/main/cpp/include)
+    include_directories(src/main/cpp/util)
+    include_directories(src/main/cpp/audio)
+    include_directories(src/main/cpp/video)
+    include_directories(src/main/cpp/media)
 
     add_library( avcodec-57 SHARED IMPORTED)
     set_target_properties( avcodec-57
@@ -46,14 +51,21 @@
     add_library(
             MediaPlayer
             SHARED
-            src/main/cpp/audio/MediaPlayer.cpp
-            src/main/cpp/audio/PlayStatus.cpp
+            src/main/cpp/MediaPlayer.cpp
+            src/main/cpp/util/PlayStatus.cpp
             src/main/cpp/audio/Audio.cpp
-            src/main/cpp/audio/AVPacketBlockQueue.cpp
+            src/main/cpp/util/AVPacketBlockQueue.cpp
             src/main/cpp/audio/AudioDecoder.cpp
             src/main/cpp/audio/AudioOutput.cpp
-            src/main/cpp/audio/MediaPlayerController.cpp
-            src/main/cpp/audio/JavaCaller.cpp
+            src/main/cpp/MediaPlayerController.cpp
+            src/main/cpp/util/JavaCaller.cpp
+            src/main/cpp/video/Video.cpp
+            src/main/cpp/video/VideoDecoder.cpp
+            src/main/cpp/video/VideoOutput.cpp
+            src/main/cpp/media/Media.cpp
+            src/main/cpp/media/MediaDecoder.cpp
+            src/main/cpp/media/MediaOutput.cpp
+            src/main/cpp/media/MediaLoader.cpp
     )
 
     target_link_libraries(

@@ -10,7 +10,7 @@
 
 #include "AVPacketBlockQueue.h"
 #include "PlayStatus.h"
-#include "../Log.h"
+#include "Log.h"
 #include "Audio.h"
 #include "JavaCaller.h"
 #include "EventCode.h"
@@ -51,6 +51,14 @@ public:
     void decode();
 
     void decodeAsync();
+
+    /**
+     * 填充音频数据
+     * @param streamIndex 音频流index
+     * @param streams 音频流
+     * @param duration 音频时长
+     */
+    void fill(int streamIndex, AVStream *streams, int64_t duration);
 
     void release();
 

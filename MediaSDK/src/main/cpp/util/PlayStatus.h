@@ -12,12 +12,14 @@
 #include <pthread.h>
 
 class PlayStatus {
-private:
-    pthread_mutex_t mutex;
-    pthread_mutex_t mutexSeek;
-    bool exit = false;
-    bool load = true;
-    bool seek = false;
+    private:
+        pthread_mutex_t mutexStatus;
+        pthread_mutex_t mutexSeek;
+    public:
+        bool exit = false;
+        bool load = true;
+        bool seek = false;
+
     public:
         PlayStatus();
         ~PlayStatus();

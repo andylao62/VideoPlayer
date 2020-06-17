@@ -7,8 +7,7 @@
 
 #include "Audio.h"
 
-Audio::Audio(const char* source, PlayStatus *playStatus) {
-    this->source = source;
+Audio::Audio(PlayStatus *playStatus) {
     queue = new AVPacketBlockQueue(playStatus);
 }
 

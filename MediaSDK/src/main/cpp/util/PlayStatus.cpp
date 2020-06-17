@@ -8,41 +8,41 @@
 #include "PlayStatus.h"
 
 PlayStatus::PlayStatus() {
-    pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&mutexStatus, NULL);
     pthread_mutex_init(&mutexSeek, NULL);
 }
 
 PlayStatus::~PlayStatus() {
-    pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&mutexSeek);
+    pthread_mutex_destroy(&mutexStatus);
 }
 
 bool PlayStatus::isExit() {
     bool result;
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutexStatus);
     result = exit;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutexStatus);
     return result;
 }
 
 bool PlayStatus::isLoad() {
     bool result;
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutexStatus);
     result = load;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutexStatus);
     return result;
 }
 
 void PlayStatus::setExit(bool exit) {
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutexStatus);
     this->exit = exit;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutexStatus);
 }
 
 void PlayStatus::setLoad(bool load) {
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutexStatus);
     this->load = load;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutexStatus);
 }
 
 bool PlayStatus::isSeek() {

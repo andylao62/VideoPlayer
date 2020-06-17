@@ -1,7 +1,7 @@
 /**
  * 播放控制器
  * 1、协调解码器解码；
- * 2、音频信息存储；
+ * 2、媒体信息存储；
  * 3、协调输出设备重采样及播放
  *
  * @author kejunyao
@@ -14,11 +14,13 @@ MediaPlayerController::MediaPlayerController(JavaVM *javaVM, JNIEnv *env, jobjec
     this->javaCaller = new JavaCaller(javaVM, env, instance);
     pthread_mutex_init(&mutexReleasing, NULL);
     pthread_mutex_init(&mutexWorking, NULL);
+    pthread_mutex_init(&mutexDecode, NULL);
 }
 
 MediaPlayerController::~MediaPlayerController() {
     pthread_mutex_destroy(&mutexReleasing);
     pthread_mutex_destroy(&mutexWorking);
+    pthread_mutex_destroy(&mutexDecode);
 }
 
 bool MediaPlayerController::isReleasing() {
@@ -50,6 +52,20 @@ void MediaPlayerController::setWorking(bool working) {
     pthread_mutex_unlock(&mutexWorking);
 }
 
+void *prepareCallback(void *data) {
+    MediaPlayerController *ctrl = (MediaPlayerController *) data;
+    pthread_mutex_lock(&ctrl->mutexDecode);
+    int result = ctrl->loader->load();
+    if (result == 0) {
+
+    } else {
+        ctrl->javaCaller->callJavaMethod(true, EVENT_ERROR, result, 0);
+        ctrl->exit = true;
+        pthread_mutex_unlock(&ctrl->mutexDecode);
+    }
+    pthread_exit(&ctrl->threadDecode);
+}
+
 void MediaPlayerController::prepare(const char *source) {
     if (isReleasing()) {
         return;
@@ -60,10 +76,11 @@ void MediaPlayerController::prepare(const char *source) {
     setWorking(true);
     playStatus = new PlayStatus();
     playStatus->setExit(false);
-    audio = new Audio(source, playStatus);
-    audioDecoder = new AudioDecoder(javaCaller, playStatus, audio);
-    audioOutput = new AudioOutput(javaCaller, playStatus, audio);
-    audioDecoder->prepareAsync();
+    media = new Media(source, playStatus);
+    decoder = new MediaDecoder(javaCaller, playStatus, media);
+    output = new MediaOutput(javaCaller, playStatus, media);
+    loader = new MediaLoader(playStatus, media);
+    pthread_create(&threadDecode, NULL, prepareCallback, this);
 }
 
 void MediaPlayerController::start() {

@@ -15,9 +15,8 @@ class Audio {
 
     public:
         AVCodecContext *avCodecContext = NULL;
-        /** 音频文件来源，本地文件、服务器文件、服务器流 */
-        const char* source = NULL;
         int streamIndex = -1;
+        AVCodecParameters *codecPar = NULL;
         AVPacketBlockQueue *queue = NULL;
         uint8_t *buffer = NULL;
         /** 数据大小 */
@@ -32,7 +31,7 @@ class Audio {
         double clock = 0;
 
     public:
-        Audio(const char* source, PlayStatus *playStatus);
+        Audio(PlayStatus *playStatus);
         ~Audio();
         void setSampleRate(int sampleRate);
         void updateClock();
