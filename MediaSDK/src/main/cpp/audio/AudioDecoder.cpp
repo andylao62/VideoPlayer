@@ -55,6 +55,7 @@ void AudioDecoder::seek(int64_t second, AVFormatContext *avFormatContext) {
 void AudioDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {
     if (audio->streamIndex == -1) {
         audio->streamIndex = streamIndex;
+        audio->codecPar = streams->codecpar;
         audio->setSampleRate(streams->codecpar->sample_rate);
         audio->duration = duration;
         audio->timeBase = streams->time_base;

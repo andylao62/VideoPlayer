@@ -44,7 +44,7 @@ int MediaDecoder::openAVCodec() {
         return ERROR_AV_MEDIA_TYPE_NOT_FOUND;
     }
     if (LOG_DEBUG) {
-        LOGE("MediaDecoder::openAVCodec, get audio av codec context");
+        LOGE("MediaDecoder::openAVCodec, get audio av codec context，id: %d", media->audio->codecPar->codec_id);
     }
     if (media->audio->streamIndex >= 0) {
         int errCode = getAVCodecContext(media->audio->codecPar, &media->audio->avCodecContext);
