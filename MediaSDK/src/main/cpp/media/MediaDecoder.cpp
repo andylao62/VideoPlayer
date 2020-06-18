@@ -5,9 +5,6 @@
  * @since 2020年06月17日
  */
 
-extern "C" {
-    #include <libavutil/time.h>
-}
 #include "MediaDecoder.h"
 
 MediaDecoder::MediaDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media) {
@@ -46,11 +43,17 @@ int MediaDecoder::openAVCodec() {
         // 既没有发现音频流，也没发现视频流，执行失败
         return ERROR_AV_MEDIA_TYPE_NOT_FOUND;
     }
+    if (LOG_DEBUG) {
+        LOGE("MediaDecoder::openAVCodec, get audio av codec context");
+    }
     if (media->audio->streamIndex >= 0) {
         int errCode = getAVCodecContext(media->audio->codecPar, &media->audio->avCodecContext);
         if (errCode != 0) {
             return errCode;
         }
+    }
+    if (LOG_DEBUG) {
+        LOGE("MediaDecoder::openAVCodec, get video av codec context");
     }
     if (media->video->streamIndex >= 0) {
         int errCode = getAVCodecContext(media->video->codecPar, &media->video->avCodecContext);

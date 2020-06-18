@@ -7,7 +7,9 @@
 
 #ifndef VIDEOPLAYER_MEDIADECODER_H
 #define VIDEOPLAYER_MEDIADECODER_H
-
+extern "C" {
+    #include <libavutil/time.h>
+}
 
 #include "VideoDecoder.h"
 #include "AudioDecoder.h"
