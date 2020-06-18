@@ -5,6 +5,9 @@
  * @since 2020年06月17日
  */
 
+extern "C" {
+    #include <libavutil/time.h>
+}
 #include "MediaDecoder.h"
 
 MediaDecoder::MediaDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media) {
@@ -38,11 +41,114 @@ int MediaDecoder::openAVCodec() {
     }
     if (media->audio->streamIndex == -1 && media->video->streamIndex == -1) {
         if (LOG_DEBUG) {
-            LOGE("MediaDecoder#openAVCodec, find AVCodecParameters failure");
+            LOGE("MediaDecoder::openAVCodec, find AVCodecParameters failure");
         }
         // 既没有发现音频流，也没发现视频流，执行失败
         return ERROR_AV_MEDIA_TYPE_NOT_FOUND;
     }
-
+    if (media->audio->streamIndex >= 0) {
+        int errCode = getAVCodecContext(media->audio->codecPar, &media->audio->avCodecContext);
+        if (errCode != 0) {
+            return errCode;
+        }
+    }
+    if (media->video->streamIndex >= 0) {
+        int errCode = getAVCodecContext(media->video->codecPar, &media->video->avCodecContext);
+        if (errCode != 0) {
+            return errCode;
+        }
+    }
     return 0;
+}
+
+int MediaDecoder::getAVCodecContext(AVCodecParameters *codecPar, AVCodecContext **avCodecContext) {
+    AVCodec *decoder = avcodec_find_decoder(codecPar->codec_id);
+    if (!decoder) {
+        if (LOG_DEBUG) {
+            LOGE("MediaDecoder::getAVCodecContext, avcodec_find_decoder failure, codec_id: %d", codecPar->codec_id);
+        }
+        return ERROR_AV_CODEC_DECODER_NOT_FOUND;
+    }
+    *avCodecContext = avcodec_alloc_context3(decoder);
+    if (!*avCodecContext) {
+        if (LOG_DEBUG) {
+            LOGE("MediaDecoder::getAVCodecContext, avcodec_alloc_context3 failure, codec_id: %d", codecPar->codec_id);
+        }
+        return ERROR_AV_CODEC_ALLOC_CONTEXT3;
+    }
+    if (avcodec_parameters_to_context(*avCodecContext, codecPar) < 0) {
+        if (LOG_DEBUG) {
+            LOGE("MediaDecoder::getAVCodecContext, avcodec_parameters_to_context failure, codec_id: %d", codecPar->codec_id);
+        }
+        return ERROR_AV_CODEC_PARAMETERS_CONTEXT;
+    }
+    if (avcodec_open2(*avCodecContext, decoder, 0) != 0) {
+        if (LOG_DEBUG) {
+            LOGE("MediaDecoder::getAVCodecContext, avcodec_open2 failure, codec_id: %d", codecPar->codec_id);
+        }
+        return ERROR_AV_CODEC_OPEN2;
+    }
+    return 0;
+}
+
+void MediaDecoder::decode() {
+    if (LOG_DEBUG) {
+        LOGD("MediaDecoder::decode()， 开始解码");
+    }
+    while (playStatus != NULL && !playStatus->isExit()) {
+        if (media->avFormatContext == NULL) {
+            break;
+        }
+        if (playStatus->isSeek()) {
+            av_usleep(1000 * 100);
+            continue;
+        }
+        if (media->audio->queue->size() > 40) {
+            av_usleep(1000 * 100);
+            continue;
+        }
+        AVPacket *avPacket = av_packet_alloc();
+        if(av_read_frame(media->avFormatContext, avPacket) == 0) {
+            if (avPacket->stream_index == media->audio->streamIndex) {
+                media->audio->queue->push(avPacket);
+            } else if (avPacket->stream_index == media->video->streamIndex) {
+                media->video->queue->push(avPacket);
+            } else {
+                av_packet_free(&avPacket);
+                av_free(avPacket);
+                avPacket = NULL;
+            }
+        } else {
+            av_packet_free(&avPacket);
+            av_free(avPacket);
+            avPacket = NULL;
+            while (playStatus != NULL && !playStatus->isExit()) {
+                if (media->audio->queue->size() > 0) {
+                    av_usleep(1000 * 100);
+                    continue;
+                }
+                playStatus->setExit(true);
+                break;
+            }
+        }
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaDecoder::decode()，解码完成。");
+    }
+}
+
+void MediaDecoder::seekByPercent(float percent) {
+    if (audioDecoder != NULL) {
+        audioDecoder->seekByPercent(percent, media->avFormatContext);
+    }
+}
+
+void MediaDecoder::seek(int second) {
+    if (audioDecoder != NULL) {
+        audioDecoder->seek(second, media->avFormatContext);
+    }
+}
+
+void MediaDecoder::release() {
+
 }

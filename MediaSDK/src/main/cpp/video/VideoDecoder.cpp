@@ -20,4 +20,9 @@ VideoDecoder::~VideoDecoder() {
 }
 
 void VideoDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {
+    if (video->streamIndex == -1) {
+        video->streamIndex = streamIndex;
+        video->codecPar = streams->codecpar;
+        video->timeBase = streams->time_base;
+    }
 }

@@ -9,8 +9,18 @@
 #define VIDEOPLAYER_VIDEOOUTPUT_H
 
 
-class VideoOutput {
+#include "JavaCaller.h"
+#include "PlayStatus.h"
+#include "Video.h"
 
+class VideoOutput {
+    public:
+        JavaCaller *javaCaller = NULL;
+        PlayStatus *playStatus = NULL;
+        Video *video = NULL;
+    public:
+        VideoOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Video *video);
+        ~VideoOutput();
 };
 
 

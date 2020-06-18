@@ -8,19 +8,32 @@
 #ifndef VIDEOPLAYER_MEDIAOUTPUT_H
 #define VIDEOPLAYER_MEDIAOUTPUT_H
 
+#include "AudioOutput.h"
+#include "VideoOutput.h"
 #include "JavaCaller.h"
 #include "PlayStatus.h"
 #include "Media.h"
 
 class MediaOutput {
     private:
-        const JavaCaller *javaCaller = NULL;
-        const PlayStatus *playStatus = NULL;
-        const Media *media = NULL;
+        JavaCaller *javaCaller = NULL;
+        PlayStatus *playStatus = NULL;
+        Media *media = NULL;
+        AudioOutput *audioOutput = NULL;
+        VideoOutput *videoOutput = NULL;
 
     public:
         MediaOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media);
         ~MediaOutput();
+
+        void play();
+        void pause();
+        void resume();
+        void stop();
+
+    void setVolume(float percent);
+
+    void release();
 };
 
 

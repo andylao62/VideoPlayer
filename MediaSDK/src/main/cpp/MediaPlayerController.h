@@ -24,9 +24,7 @@
 
 class MediaPlayerController {
     private:
-        PlayStatus *playStatus = NULL;
         Media *media = NULL;
-        MediaDecoder *decoder = NULL;
         MediaOutput *output = NULL;
 
     private:
@@ -36,10 +34,12 @@ class MediaPlayerController {
         bool working = false;
 
     public:
+        PlayStatus *playStatus = NULL;
         JavaCaller *javaCaller = NULL;
         pthread_t threadDecode;
         pthread_mutex_t mutexDecode;
         MediaLoader *loader = NULL;
+        MediaDecoder *decoder = NULL;
         bool exit = false;
     private:
         bool isReleasing();
@@ -58,6 +58,7 @@ class MediaPlayerController {
         void pause();
         void stop();
         void release();
+        void decode();
         void setVolume(float percent);
 };
 

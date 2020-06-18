@@ -18,39 +18,26 @@
 
 extern "C" {
     #include <libavformat/avformat.h>
-    #include <libavcodec/avcodec.h>
-    #include <libavutil/time.h>
 }
 
 class AudioDecoder {
 private:
-    pthread_mutex_t mutex;
     pthread_mutex_t mutexSeek;
     Audio *audio = NULL;
     JavaCaller *javaCaller;
-    AVFormatContext *avFormatContext = NULL;
-    bool exit = false;
 
 public:
     PlayStatus *playStatus;
-    pthread_t threadDecode;
 
 public:
     AudioDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Audio *audio);
-
     ~AudioDecoder();
 
-    void prepare();
+    void seekByPercent(float percent, AVFormatContext *avFormatContext);
 
-    void prepareAsync();
-
-    void seekByPercent(float percent);
-
-    void seek(int64_t second);
+    void seek(int64_t second, AVFormatContext *avFormatContext);
 
     void decode();
-
-    void decodeAsync();
 
     /**
      * 填充音频数据

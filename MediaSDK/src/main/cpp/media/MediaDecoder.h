@@ -21,15 +21,26 @@ class MediaDecoder {
         VideoDecoder *videoDecoder = NULL;
 
     public:
-        const JavaCaller *javaCaller = NULL;
-        const PlayStatus *playStatus = NULL;
-        const Media *media = NULL;
+        JavaCaller *javaCaller = NULL;
+        PlayStatus *playStatus = NULL;
+        Media *media = NULL;
+
+private:
+    int getAVCodecContext(AVCodecParameters *codecPar, AVCodecContext **avCodecContext);
 
     public:
         MediaDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media);
         ~MediaDecoder();
 
         int openAVCodec();
+
+        void decode();
+
+        void seekByPercent(float percent);
+
+        void seek(int second);
+
+        void release();
 };
 
 

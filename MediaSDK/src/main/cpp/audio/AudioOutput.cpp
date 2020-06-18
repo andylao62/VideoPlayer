@@ -170,7 +170,7 @@ void *playCallback(void *data) {
 void AudioOutput::play() {
     pthread_create(&threadPlay, NULL, playCallback, this);
     if (LOG_DEBUG) {
-        LOGD("AudioOutput#play, 开辟线程播放, source: %s", audio->source);
+        LOGD("AudioOutput#play, 开辟线程播放");
     }
 }
 
@@ -224,7 +224,7 @@ void AudioOutput::pause() {
         (*pcmPlayerPlay) -> SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_PAUSED);
     }
     if (LOG_DEBUG) {
-        LOGD("AudioOutput#pause, 暂停播放, source: %s", audio->source);
+        LOGD("AudioOutput#pause, 暂停播放");
     }
 }
 
@@ -233,7 +233,7 @@ void AudioOutput::resume() {
         (*pcmPlayerPlay) -> SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_PLAYING);
     }
     if (LOG_DEBUG) {
-        LOGD("AudioOutput#resume, 播放/重新播放, source: %s", audio->source);
+        LOGD("AudioOutput#resume, 播放/重新播放");
     }
 }
 
@@ -242,7 +242,7 @@ void AudioOutput::stop() {
         (*pcmPlayerPlay) -> SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_STOPPED);
     }
     if (LOG_DEBUG) {
-        LOGD("AudioOutput#stop, 停止播放, source: %s", audio->source);
+        LOGD("AudioOutput#stop, 停止播放");
     }
 }
 

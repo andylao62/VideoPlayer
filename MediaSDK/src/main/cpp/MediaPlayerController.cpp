@@ -57,12 +57,18 @@ void *prepareCallback(void *data) {
     pthread_mutex_lock(&ctrl->mutexDecode);
     int result = ctrl->loader->load();
     if (result == 0) {
-
+        result = ctrl->decoder->openAVCodec();
+    }
+    if (result == 0) {
+        ctrl->javaCaller->callJavaMethod(true, EVENT_PREPARED, 0, 0);
+        if (ctrl->playStatus == NULL || ctrl->playStatus->isExit()) {
+            ctrl->exit = true;
+        }
     } else {
         ctrl->javaCaller->callJavaMethod(true, EVENT_ERROR, result, 0);
         ctrl->exit = true;
-        pthread_mutex_unlock(&ctrl->mutexDecode);
     }
+    pthread_mutex_unlock(&ctrl->mutexDecode);
     pthread_exit(&ctrl->threadDecode);
 }
 
@@ -87,50 +93,50 @@ void MediaPlayerController::start() {
     if (isReleasing()) {
         return;
     }
-    if (audio == NULL) {
+    if (media == NULL) {
         return;
     }
-    if (audioOutput == NULL) {
+    if (output == NULL) {
         return;
     }
-    audioOutput->play();
-    audioDecoder->decodeAsync();
+    output->play();
+    decode();
 }
 
 
 void MediaPlayerController::seekByPercent(float percent) {
-    if (audioDecoder == NULL) {
+    if (decoder == NULL) {
         return;
     }
-    audioDecoder->seekByPercent(percent);
+    decoder->seekByPercent(percent);
 }
 
 
 void MediaPlayerController::seek(int second) {
-    if (audioDecoder == NULL) {
+    if (decoder == NULL) {
         return;
     }
-    audioDecoder->seek(second);
+    decoder->seek(second);
 }
 
 void MediaPlayerController::resume() {
     if (isReleasing()) {
         return;
     }
-    if (audioOutput == NULL) {
+    if (output == NULL) {
         return;
     }
-    audioOutput->resume();
+    output->resume();
 }
 
 void MediaPlayerController::pause() {
     if (isReleasing()) {
         return;
     }
-    if (audioOutput == NULL) {
+    if (output == NULL) {
         return;
     }
-    audioOutput->pause();
+    output->pause();
 }
 
 void MediaPlayerController::stop() {
@@ -140,10 +146,10 @@ void MediaPlayerController::stop() {
     if (!isWorking()) {
         return;
     }
-    if (audioOutput == NULL) {
+    if (output == NULL) {
         return;
     }
-    audioOutput->stop();
+    output->stop();
 }
 
 void MediaPlayerController::setVolume(float percent) {
@@ -153,10 +159,26 @@ void MediaPlayerController::setVolume(float percent) {
     if (!isWorking()) {
         return;
     }
-    if (audioOutput == NULL) {
+    if (output == NULL) {
         return;
     }
-    audioOutput->setVolume(percent);
+    output->setVolume(percent);
+}
+
+void *decodeCallback(void *data) {
+    MediaPlayerController *ctrl = (MediaPlayerController *) data;
+    ctrl->decoder->decode();
+    if (ctrl->playStatus != NULL && !ctrl->playStatus->isExit()) {
+        if (ctrl->javaCaller != NULL) {
+            ctrl->javaCaller->callJavaMethod(true, EVENT_COMPLETE, 0, 0);
+        }
+    }
+    ctrl->exit = true;
+    pthread_exit(&ctrl->threadDecode);
+}
+
+void MediaPlayerController::decode() {
+    pthread_create(&threadDecode, NULL, decodeCallback, this);
 }
 
 void MediaPlayerController::release() {
@@ -168,31 +190,44 @@ void MediaPlayerController::release() {
     }
     setReleasing(true);
     playStatus->setExit(true);
-    if (audioOutput != NULL) {
-        audioOutput->release();
+    pthread_mutex_lock(&mutexDecode);
+    if (output != NULL) {
+        output->release();
     }
-    if (audioDecoder != NULL) {
-        audioDecoder->release();
+    int sleepCount = 0;
+    while (!exit) {
+        if(sleepCount > 1000) {
+            exit = true;
+        }
+        if(LOG_DEBUG) {
+            LOGE("wait ffmpeg  exit %d", sleepCount);
+        }
+        sleepCount++;
+        av_usleep(1000 * 10); // 暂停10毫秒
     }
-    if (audio != NULL) {
-        audio->release();
+    if (decoder != NULL) {
+        decoder->release();
     }
-    if (audioOutput != NULL) {
-        delete(audioOutput);
-        audioOutput = NULL;
+    if (media != NULL) {
+        media->release();
     }
-    if (audioDecoder != NULL) {
-        delete(audioDecoder);
-        audioDecoder = NULL;
+    if (output != NULL) {
+        delete(output);
+        output = NULL;
     }
-    if (audio != NULL) {
-        delete(audio);
-        audio = NULL;
+    if (decoder != NULL) {
+        delete(decoder);
+        decoder = NULL;
+    }
+    if (media != NULL) {
+        delete(media);
+        media = NULL;
     }
     if (playStatus != NULL) {
         delete(playStatus);
         playStatus = NULL;
     }
+    pthread_mutex_unlock(&mutexDecode);
     setReleasing(false);
     setWorking(false);
     if (LOG_DEBUG) {

@@ -23,9 +23,14 @@ Media::~Media() {
 void Media::release() {
     if (audio != NULL) {
         audio->release();
-
     }
     if (video != NULL) {
         video->release();
+    }
+    if (avFormatContext != NULL) {
+        avformat_close_input(&avFormatContext);
+        avformat_free_context(avFormatContext);
+        av_free(avFormatContext);
+        avFormatContext = NULL;
     }
 }
