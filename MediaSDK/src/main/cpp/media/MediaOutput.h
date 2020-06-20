@@ -22,6 +22,7 @@ class MediaOutput {
         AudioOutput *audioOutput = NULL;
         VideoOutput *videoOutput = NULL;
 
+
     public:
         MediaOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media);
         ~MediaOutput();

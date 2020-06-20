@@ -159,7 +159,7 @@ int AudioOutput::getCurrentSampleRateForOpenSLES(int sampleRate) {
     return rate;
 }
 
-void *playCallback(void *data) {
+void *playAudioCallback(void *data) {
     AudioOutput *out = (AudioOutput*) data;
     out->initOpenSLES();
     if (out->threadPlay != NULL) {
@@ -168,7 +168,7 @@ void *playCallback(void *data) {
 }
 
 void AudioOutput::play() {
-    pthread_create(&threadPlay, NULL, playCallback, this);
+    pthread_create(&threadPlay, NULL, playAudioCallback, this);
     if (LOG_DEBUG) {
         LOGD("AudioOutput#play, 开辟线程播放");
     }
@@ -341,12 +341,12 @@ int AudioOutput::resample() {
             swr_free(&swr_ctx);
             break;
         } else{
-            av_packet_free(&avPacket);
-            av_free(avPacket);
-            avPacket = NULL;
             av_frame_free(&avFrame);
             av_free(avFrame);
             avFrame = NULL;
+            av_packet_free(&avPacket);
+            av_free(avPacket);
+            avPacket = NULL;
             continue;
         }
     }

@@ -7,6 +7,7 @@
 
 #include <jni.h>
 #include <linux/stddef.h>
+#include <stdint.h>
 #include "Log.h"
 
 class JavaCaller {
@@ -16,6 +17,7 @@ private:
     JNIEnv *jenv = NULL;
     jobject instance;
     jmethodID jmidPostEvent;
+    jmethodID jmidRenderYUV;
 public:
     JavaCaller(JavaVM *javaVM, JNIEnv *env, jobject *instance);
     ~JavaCaller();
@@ -28,6 +30,8 @@ public:
      * @param arg2 参数2
      */
     void callJavaMethod(bool isWorkThread, int event, int arg1, int arg2);
+
+    void callRenderYUV(int width, int height, uint8_t *fy, uint8_t *fu, uint8_t *fv);
 };
 
 

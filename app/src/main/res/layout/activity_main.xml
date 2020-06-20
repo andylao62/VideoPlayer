@@ -67,4 +67,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="播放本地文件"
+        android:onClick="playLocalFile"/>
+
+    <com.kejunyao.media.view.MediaSurfaceView
+        android:id="@+id/media_surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

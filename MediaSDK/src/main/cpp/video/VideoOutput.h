@@ -8,6 +8,11 @@
 #ifndef VIDEOPLAYER_VIDEOOUTPUT_H
 #define VIDEOPLAYER_VIDEOOUTPUT_H
 
+extern "C" {
+    #include <libavutil/time.h>
+    #include <libswscale/swscale.h>
+    #include <libavutil/imgutils.h>
+};
 
 #include "JavaCaller.h"
 #include "PlayStatus.h"
@@ -18,9 +23,21 @@ class VideoOutput {
         JavaCaller *javaCaller = NULL;
         PlayStatus *playStatus = NULL;
         Video *video = NULL;
+        pthread_t threadPlay;
     public:
         VideoOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Video *video);
         ~VideoOutput();
+
+        /**
+         * 将原AVFrame转换为YUV420PFrame
+         * @param avFrame 原AVFrame
+         * @return YUV420PFrame
+         */
+        AVFrame *swsToYUV420P(AVFrame *avFrame);
+
+        void play();
+
+        void release();
 };
 
 

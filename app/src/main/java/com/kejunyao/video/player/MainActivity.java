@@ -143,4 +143,9 @@ public class MainActivity extends AppCompatActivity {
     public void stop(View view) {
         mMediaPlayer.stop();
     }
+
+    public void playLocalFile(View view) {
+        mMediaPlayer.setDataSource("/sdcard/jwm1972.mp4");
+        mMediaPlayer.prepare();
+    }
 }

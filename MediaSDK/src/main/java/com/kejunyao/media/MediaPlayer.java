@@ -134,6 +134,10 @@ public class MediaPlayer {
         }
     }
 
+    private void renderYUV(int width, int height, byte[] y, byte[] u, byte[] v) {
+        MediaLog.d("", "renderYUV, width: ", width, ", height: ", height);
+    }
+
     private native void _prepare(String source);
     private native void _start();
     private native void _seekByPercent(float percent);

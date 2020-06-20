@@ -25,6 +25,9 @@ void MediaOutput::play() {
     if (audioOutput != NULL) {
         audioOutput->play();
     }
+    if (videoOutput != NULL) {
+        videoOutput->play();
+    }
 }
 
 void MediaOutput::pause() {
