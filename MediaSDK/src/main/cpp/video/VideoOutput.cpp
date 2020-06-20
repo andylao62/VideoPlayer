@@ -5,8 +5,7 @@
  * @since 2020年06月17日
  */
 
-#include <EventCode.h>
-
+#include "EventCode.h"
 #include "VideoOutput.h"
 
 VideoOutput::VideoOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Video *video) {
@@ -22,21 +21,21 @@ VideoOutput::~VideoOutput() {
 }
 
 void *playVideoCallback(void *data) {
-    VideoOutput *out = (VideoOutput *)(data);
+    VideoOutput *out = (VideoOutput *) (data);
     while (out->playStatus != NULL && !out->playStatus->isExit()) {
         if (out->playStatus->isSeek()) {
             av_usleep(1000 * 100);
             continue;
         }
-        if(out->video->queue->size() == 0) { // 加载中
-            if(!out->playStatus->isLoad()) {
+        if (out->video->queue->size() == 0) { // 加载中
+            if (!out->playStatus->isLoad()) {
                 out->playStatus->setLoad(true);
                 out->javaCaller->callJavaMethod(true, EVENT_LOADING, 0, 0);
             }
             av_usleep(1000 * 100);
             continue;
         } else { // 加载完成
-            if(out->playStatus->isLoad()) {
+            if (out->playStatus->isLoad()) {
                 out->playStatus->setLoad(false);
                 out->javaCaller->callJavaMethod(true, EVENT_LOADING, 1, 0);
             }
@@ -64,13 +63,15 @@ void *playVideoCallback(void *data) {
             avPacket = NULL;
             continue;
         }
-        if(avFrame->format == AV_PIX_FMT_YUV420P) {
+        if (avFrame->format == AV_PIX_FMT_YUV420P) {
+            double diff = out->getFrameDiffTime(avFrame);
+            av_usleep(out->getDelayTime(diff) * 1000000);
             out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
                                            out->video->avCodecContext->height,
                                            avFrame->data[0],
                                            avFrame->data[1],
                                            avFrame->data[2]
-                                           );
+            );
         } else {
             AVFrame *frameYUV420P = out->swsToYUV420P(avFrame);
             if (frameYUV420P != NULL) {
@@ -104,7 +105,7 @@ AVFrame *VideoOutput::swsToYUV420P(AVFrame *avFrame) {
             video->avCodecContext->width,
             video->avCodecContext->height,
             1
-            );
+    );
     uint8_t *buffer = static_cast<uint8_t *>(av_malloc(num * sizeof(uint8_t)));
     av_image_fill_arrays(
             pFrameYUV420P->data,
@@ -114,7 +115,7 @@ AVFrame *VideoOutput::swsToYUV420P(AVFrame *avFrame) {
             video->avCodecContext->width,
             video->avCodecContext->height,
             1
-            );
+    );
     SwsContext *sws_ctx = sws_getContext(
             video->avCodecContext->width,
             video->avCodecContext->height,
@@ -126,7 +127,7 @@ AVFrame *VideoOutput::swsToYUV420P(AVFrame *avFrame) {
             NULL,
             NULL,
             NULL
-            );
+    );
     if (!sws_ctx) {
         av_frame_free(&pFrameYUV420P);
         av_free(pFrameYUV420P);
@@ -154,5 +155,46 @@ void VideoOutput::play() {
 }
 
 void VideoOutput::release() {
+}
+
+double VideoOutput::getFrameDiffTime(AVFrame *avFrame) {
+    double pts = av_frame_get_best_effort_timestamp(avFrame);
+    if (pts == AV_NOPTS_VALUE) {
+        pts = 0;
+    }
+    pts *= av_q2d(video->timeBase);
+    if (pts > 0) {
+        video->clock = pts;
+    }
+    double diff = video->audio->clock - video->clock;
+    return diff;
+}
+
+double VideoOutput::getDelayTime(double diff) {
+    if (diff > 0.003) {
+        video->delayTime = video->delayTime * 2 / 3;
+        if (video->delayTime < video->defaultDelayTime / 2) {
+            video->delayTime = video->defaultDelayTime * 2 / 3;
+        } else if (video->delayTime > video->defaultDelayTime * 2) {
+            video->delayTime = video->defaultDelayTime * 2;
+        }
+    } else if (diff < -0.003) {
+        video->delayTime = video->delayTime * 3 / 2;
+        if (video->delayTime < video->defaultDelayTime / 2) {
+            video->delayTime = video->defaultDelayTime * 2 / 3;
+        } else if (video->delayTime > video->defaultDelayTime * 2) {
+            video->delayTime = video->defaultDelayTime * 2;
+        }
+    } else if (diff == 0.003) {
+    }
+    if (diff >= 0.5) {
+        video->delayTime = 0;
+    } else if (diff <= -0.5) {
+        video->delayTime = video->defaultDelayTime * 2;
+    }
+    if (fabs(diff) >= 10) {
+        video->delayTime = video->defaultDelayTime;
+    }
+    return video->delayTime;
 }
 

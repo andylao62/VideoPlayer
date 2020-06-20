@@ -11,6 +11,7 @@ Media::Media(const char *source, PlayStatus *playStatus) {
     this->source = source;
     this->audio = new Audio(playStatus);
     this->video = new Video(playStatus);
+    this->video->audio = this->audio;
 }
 
 Media::~Media() {

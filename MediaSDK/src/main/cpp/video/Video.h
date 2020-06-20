@@ -7,6 +7,8 @@
 
 #ifndef VIDEOPLAYER_VIDEO_H
 #define VIDEOPLAYER_VIDEO_H
+
+#include "Audio.h"
 #include "AVPacketBlockQueue.h"
 
 class Video {
@@ -16,6 +18,10 @@ class Video {
         AVCodecContext *avCodecContext = NULL;
         AVPacketBlockQueue *queue = NULL;
         AVRational timeBase;
+        double clock = 0;
+        double delayTime = 0;
+        double defaultDelayTime = 0.04;
+        Audio *audio = NULL;
     public:
         Video(PlayStatus *playStatus);
         ~Video();

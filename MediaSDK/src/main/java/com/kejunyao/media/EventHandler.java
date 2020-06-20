@@ -27,10 +27,11 @@ class EventHandler extends Handler {
     static final int EVENT_ERROR     = 6;
     static final int EVENT_COMPLETE  = 7;
 
-    private final WeakReference<MediaPlayer> mAudioPlayerRef;
+
+    private final WeakReference<MediaPlayer> mPlayerRef;
     public EventHandler(MediaPlayer player, Looper looper) {
         super(looper);
-        mAudioPlayerRef = new WeakReference<>(player);
+        mPlayerRef = new WeakReference<>(player);
     }
 
     @Override
@@ -73,35 +74,35 @@ class EventHandler extends Handler {
     }
 
     private void onPrepared() {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null && player.mOnPreparedListener != null) {
             player.mOnPreparedListener.onPrepared();
         }
     }
 
     private void onLoad(boolean isLoading) {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null && player.mOnLoadListener != null) {
             player.mOnLoadListener.onLoad(isLoading);
         }
     }
 
     private void onPauseResume(boolean pause) {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null && player.mOnPauseResumeListener != null) {
             player.mOnPauseResumeListener.onPause(pause);
         }
     }
 
     private void onTimeInfo(int currentTime, int totalTime) {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null && player.mOnTimeInfoListener != null) {
             player.mOnTimeInfoListener.onTimeInfo(currentTime, totalTime);
         }
     }
 
     private void onError(int errCode) {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null) {
             player.stop();
             if (player.mOnErrorListener != null) {
@@ -111,7 +112,7 @@ class EventHandler extends Handler {
     }
 
     private void onComplete() {
-        MediaPlayer player = mAudioPlayerRef.get();
+        MediaPlayer player = mPlayerRef.get();
         if (player != null) {
             player.stop();
             if (player.mOnCompleteListener != null) {
@@ -119,5 +120,4 @@ class EventHandler extends Handler {
             }
         }
     }
-
 }

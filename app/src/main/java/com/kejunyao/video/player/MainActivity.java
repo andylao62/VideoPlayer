@@ -114,15 +114,12 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
         mMediaPlayer.setOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete() {
                 MediaLog.d(TAG, "播放完成。");
             }
         });
-
-
     }
 
     private void setVolumeProgress(float percent) {
@@ -150,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void playLocalFile(View view) {
         mMediaPlayer.setDataSource("/sdcard/jwm1972.mp4");
+        // mMediaPlayer.setDataSource("/sdcard/demo.mp4");
+        mMediaPlayer.setDataSource("/sdcard/out.mp4");
         mMediaPlayer.prepare();
     }
 }
