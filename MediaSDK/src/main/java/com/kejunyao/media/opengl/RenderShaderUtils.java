@@ -1,4 +1,4 @@
-package com.kejunyao.media.view;
+package com.kejunyao.media.opengl;
 
 import android.content.Context;
 import android.opengl.GLES20;

@@ -73,7 +73,7 @@
         android:text="播放本地文件"
         android:onClick="playLocalFile"/>
 
-    <com.kejunyao.media.view.MediaSurfaceView
+    <com.kejunyao.media.opengl.MediaSurfaceView
         android:id="@+id/media_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

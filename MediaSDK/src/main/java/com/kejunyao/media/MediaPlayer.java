@@ -1,6 +1,7 @@
 package com.kejunyao.media;
 
 import android.os.Looper;
+import com.kejunyao.media.opengl.MediaSurfaceView;
 
 /**
  * 多媒体播放Controller
@@ -64,6 +65,11 @@ public class MediaPlayer {
     OnCompleteListener mOnCompleteListener;
     public void setOnCompleteListener(OnCompleteListener listener) {
         mOnCompleteListener = listener;
+    }
+
+    private MediaSurfaceView mSurfaceView;
+    public void setSurfaceView(MediaSurfaceView surfaceView) {
+        mSurfaceView = surfaceView;
     }
 
     private String mSource;
@@ -135,7 +141,9 @@ public class MediaPlayer {
     }
 
     private void renderYUV(int width, int height, byte[] y, byte[] u, byte[] v) {
-        MediaLog.d("", "renderYUV, width: ", width, ", height: ", height);
+        if (mSurfaceView != null) {
+            mSurfaceView.setYUVData(width, height, y, u, v);
+        }
     }
 
     private native void _prepare(String source);

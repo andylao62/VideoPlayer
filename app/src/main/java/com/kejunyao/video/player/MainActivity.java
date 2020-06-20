@@ -12,6 +12,7 @@ import com.kejunyao.media.OnLoadListener;
 import com.kejunyao.media.OnPauseResumeListener;
 import com.kejunyao.media.OnPreparedListener;
 import com.kejunyao.media.OnTimeInfoListener;
+import com.kejunyao.media.opengl.MediaSurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar mSeekBar;
     private TextView mVolumeTextView;
     private SeekBar mVolumeSeekBar;
+    private MediaSurfaceView mSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         mSeekBar = findViewById(R.id.seek_bar);
         mVolumeTextView = findViewById(R.id.volume_text);
         mVolumeSeekBar = findViewById(R.id.seek_volume);
+        mSurfaceView = findViewById(R.id.media_surface_view);
+        mMediaPlayer.setSurfaceView(mSurfaceView);
         mVolumeSeekBar.setProgress((int) (mMediaPlayer.getVolumePercent() * 100));
         setVolumeProgress(mMediaPlayer.getVolumePercent());
 
