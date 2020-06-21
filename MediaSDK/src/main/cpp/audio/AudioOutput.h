@@ -16,7 +16,6 @@
 #include "ErrorCode.h"
 
 extern "C" {
-    #include "libavcodec/avcodec.h"
     #include <libswresample/swresample.h>
     #include <SLES/OpenSLES.h>
     #include <SLES/OpenSLES_Android.h>
@@ -48,6 +47,7 @@ public:
     pthread_t threadPlay;
     // 缓冲器队列接口
     SLAndroidSimpleBufferQueueItf pcmBufferQueue = NULL;
+    pthread_mutex_t mutexDecode;
 
 private:
     int getCurrentSampleRateForOpenSLES(int sampleRate);

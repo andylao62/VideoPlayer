@@ -38,10 +38,6 @@ private:
 
         void decode();
 
-        void seekByPercent(float percent);
-
-        void seek(int second);
-
         void release();
 };
 

@@ -24,6 +24,7 @@ class VideoOutput {
         PlayStatus *playStatus = NULL;
         Video *video = NULL;
         pthread_t threadPlay;
+        pthread_mutex_t mutexDecode;
     public:
         VideoOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Video *video);
         ~VideoOutput();
@@ -34,13 +35,9 @@ class VideoOutput {
          * @return YUV420PFrame
          */
         AVFrame *swsToYUV420P(AVFrame *avFrame);
-
         double getFrameDiffTime(AVFrame *avFrame);
-
         double getDelayTime(double diff);
-
         void play();
-
         void release();
 };
 

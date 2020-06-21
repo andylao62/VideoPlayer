@@ -130,25 +130,16 @@ void MediaDecoder::decode() {
                     av_usleep(1000 * 100);
                     continue;
                 }
-                playStatus->setExit(true);
+                if (playStatus != NULL && !playStatus->isSeek()) {
+                    av_usleep(1000 * 100);
+                    playStatus->setExit(true);
+                }
                 break;
             }
         }
     }
     if (LOG_DEBUG) {
         LOGD("MediaDecoder::decode()，解码完成。");
-    }
-}
-
-void MediaDecoder::seekByPercent(float percent) {
-    if (audioDecoder != NULL) {
-        audioDecoder->seekByPercent(percent, media->avFormatContext);
-    }
-}
-
-void MediaDecoder::seek(int second) {
-    if (audioDecoder != NULL) {
-        audioDecoder->seek(second, media->avFormatContext);
     }
 }
 

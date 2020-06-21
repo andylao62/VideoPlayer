@@ -21,7 +21,7 @@ class MediaOutput {
         Media *media = NULL;
         AudioOutput *audioOutput = NULL;
         VideoOutput *videoOutput = NULL;
-
+        pthread_mutex_t mutexSeek;
 
     public:
         MediaOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Media *media);
@@ -31,10 +31,10 @@ class MediaOutput {
         void pause();
         void resume();
         void stop();
-
-    void setVolume(float percent);
-
-    void release();
+        void setVolume(float percent);
+        void seekByPercent(float percent);
+        void seek(int second);
+        void release();
 };
 
 

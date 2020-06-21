@@ -11,9 +11,11 @@ AudioOutput::AudioOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Audio *
     this->javaCaller = javaCaller;
     this->playStatus = playStatus;
     this->audio = audio;
+    pthread_mutex_init(&mutexDecode, NULL);
 }
 
 AudioOutput::~AudioOutput() {
+    pthread_mutex_destroy(&mutexDecode);
 }
 
 void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
@@ -283,11 +285,13 @@ int AudioOutput::resample() {
             avPacket = NULL;
             continue;
         }
+        pthread_mutex_lock(&mutexDecode);
         int ret = avcodec_send_packet(audio->avCodecContext, avPacket);
         if(ret != 0) {
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
+            pthread_mutex_unlock(&mutexDecode);
             continue;
         }
         AVFrame *avFrame = av_frame_alloc();
@@ -313,6 +317,7 @@ int AudioOutput::resample() {
                 av_free(avFrame);
                 avFrame = NULL;
                 swr_free(&swr_ctx);
+                pthread_mutex_unlock(&mutexDecode);
                 continue;
             }
 
@@ -339,14 +344,16 @@ int AudioOutput::resample() {
             av_free(avFrame);
             avFrame = NULL;
             swr_free(&swr_ctx);
+            pthread_mutex_unlock(&mutexDecode);
             break;
-        } else{
+        } else {
             av_frame_free(&avFrame);
             av_free(avFrame);
             avFrame = NULL;
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
+            pthread_mutex_unlock(&mutexDecode);
             continue;
         }
     }

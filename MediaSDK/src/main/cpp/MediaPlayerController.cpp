@@ -105,18 +105,18 @@ void MediaPlayerController::start() {
 
 
 void MediaPlayerController::seekByPercent(float percent) {
-    if (decoder == NULL) {
+    if (output == NULL) {
         return;
     }
-    decoder->seekByPercent(percent);
+    output->seekByPercent(percent);
 }
 
 
 void MediaPlayerController::seek(int second) {
-    if (decoder == NULL) {
+    if (output == NULL) {
         return;
     }
-    decoder->seek(second);
+    output->seek(second);
 }
 
 void MediaPlayerController::resume() {

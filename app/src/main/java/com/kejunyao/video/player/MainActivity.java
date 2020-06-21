@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     public void playLocalFile(View view) {
         mMediaPlayer.setDataSource("/sdcard/jwm1972.mp4");
         // mMediaPlayer.setDataSource("/sdcard/demo.mp4");
-        mMediaPlayer.setDataSource("/sdcard/out.mp4");
+        // mMediaPlayer.setDataSource("/sdcard/out.mp4");
         mMediaPlayer.prepare();
     }
 }

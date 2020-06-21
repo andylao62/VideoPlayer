@@ -15,10 +15,12 @@ class PlayStatus {
     private:
         pthread_mutex_t mutexStatus;
         pthread_mutex_t mutexSeek;
+        pthread_mutex_t mutexPause;
     public:
         bool exit = false;
         bool load = true;
         bool seek = false;
+        bool pause = false;
 
     public:
         PlayStatus();
@@ -26,9 +28,11 @@ class PlayStatus {
         bool isExit();
         bool isLoad();
         bool isSeek();
+        bool isPause();
         void setExit(bool exit);
         void setLoad(bool load);
         void setSeek(bool seek);
+        void setPause(bool pause);
 };
 
 

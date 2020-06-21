@@ -12,18 +12,24 @@ VideoOutput::VideoOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Video *
     this->javaCaller = javaCaller;
     this->playStatus = playStatus;
     this->video = video;
+    pthread_mutex_init(&mutexDecode, NULL);
 }
 
 VideoOutput::~VideoOutput() {
     this->javaCaller = NULL;
     this->playStatus = NULL;
     this->video = NULL;
+    pthread_mutex_destroy(&mutexDecode);
 }
 
 void *playVideoCallback(void *data) {
     VideoOutput *out = (VideoOutput *) (data);
     while (out->playStatus != NULL && !out->playStatus->isExit()) {
         if (out->playStatus->isSeek()) {
+            av_usleep(1000 * 100);
+            continue;
+        }
+        if (out->playStatus->isPause()) {
             av_usleep(1000 * 100);
             continue;
         }
@@ -47,10 +53,12 @@ void *playVideoCallback(void *data) {
             avPacket = NULL;
             continue;
         }
+        pthread_mutex_lock(&out->mutexDecode);
         if (avcodec_send_packet(out->video->avCodecContext, avPacket) != 0) {
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
+            pthread_mutex_unlock(&out->mutexDecode);
             continue;
         }
         AVFrame *avFrame = av_frame_alloc();
@@ -61,6 +69,7 @@ void *playVideoCallback(void *data) {
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
+            pthread_mutex_unlock(&out->mutexDecode);
             continue;
         }
         if (avFrame->format == AV_PIX_FMT_YUV420P) {
@@ -93,6 +102,7 @@ void *playVideoCallback(void *data) {
         av_packet_free(&avPacket);
         av_free(avPacket);
         avPacket = NULL;
+        pthread_mutex_unlock(&out->mutexDecode);
         LOGE("子线程视频解码成功.");
     }
     pthread_exit(&out->threadPlay);
