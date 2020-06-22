@@ -146,3 +146,9 @@ void MediaDecoder::decode() {
 void MediaDecoder::release() {
 
 }
+
+void MediaDecoder::tryInitMediaCoder() {
+    if (videoDecoder != NULL) {
+        videoDecoder->tryInitMediaCoder();
+    }
+}

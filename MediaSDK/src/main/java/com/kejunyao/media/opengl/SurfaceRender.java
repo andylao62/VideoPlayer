@@ -1,8 +1,11 @@
 package com.kejunyao.media.opengl;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.view.Surface;
 
 import com.kejunyao.media.R;
 
@@ -19,12 +22,11 @@ import javax.microedition.khronos.opengles.GL10;
  * @author kejunyao
  * @since 2020年06月19日
  */
-class MediaSurfaceRender implements GLSurfaceView.Renderer {
+class SurfaceRender implements GLSurfaceView.Renderer {
 
     private final Context context;
 
     private final float[] vertexData = {
-
             -1f, -1f,
             1f, -1f,
             -1f, 1f,
@@ -41,23 +43,31 @@ class MediaSurfaceRender implements GLSurfaceView.Renderer {
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer textureBuffer;
+
+    // YUV
     private int program_yuv;
     private int avPosition_yuv;
     private int afPosition_yuv;
-    private int textureid;
-
     private int sampler_y;
     private int sampler_u;
     private int sampler_v;
     private int[] textureId_yuv;
-
     private int width_yuv;
     private int height_yuv;
     private ByteBuffer y;
     private ByteBuffer u;
     private ByteBuffer v;
 
-    MediaSurfaceRender(Context context) {
+    // MediaCodec
+    private int program;
+    private int avPosition;
+    private int afPosition;
+    private int samplerOES;
+    private int textureId;
+    private SurfaceTexture surfaceTexture;
+    private Surface surface;
+
+    SurfaceRender(Context context) {
         this.context = context;
         vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -72,10 +82,20 @@ class MediaSurfaceRender implements GLSurfaceView.Renderer {
         textureBuffer.position(0);
     }
 
+    private SurfaceTexture.OnFrameAvailableListener mOnFrameAvailableListener;
+    public void setOnFrameAvailableListener(SurfaceTexture.OnFrameAvailableListener listener) {
+        mOnFrameAvailableListener = listener;
+    }
+
+    private boolean isRenderMediaCodec = true;
+    public void setRenderMediaCodec(boolean isRenderMediaCodec) {
+        this.isRenderMediaCodec = isRenderMediaCodec;
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         initRenderYUV();
+        initRenderMediaCodec();
     }
 
     @Override
@@ -87,13 +107,13 @@ class MediaSurfaceRender implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        renderYUV();
+        render();
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 
     private void initRenderYUV() {
         String vertexSource = RenderShaderUtils.readRaw(context, R.raw.vertex_shader);
-        String fragmentSource = RenderShaderUtils.readRaw(context, R.raw.fragment_shader);
+        String fragmentSource = RenderShaderUtils.readRaw(context, R.raw.fragment_yuv);
         program_yuv = RenderShaderUtils.createProgram(vertexSource, fragmentSource);
 
         avPosition_yuv = GLES20.glGetAttribLocation(program_yuv, "av_Position");
@@ -157,5 +177,55 @@ class MediaSurfaceRender implements GLSurfaceView.Renderer {
             u = null;
             v = null;
         }
+    }
+
+    private void initRenderMediaCodec() {
+        String vertexSource = RenderShaderUtils.readRaw(context, R.raw.vertex_shader);
+        String fragmentSource = RenderShaderUtils.readRaw(context, R.raw.fragment_mediacodec);
+        program = RenderShaderUtils.createProgram(vertexSource, fragmentSource);
+
+        avPosition = GLES20.glGetAttribLocation(program, "av_Position");
+        afPosition = GLES20.glGetAttribLocation(program, "af_Position");
+        samplerOES = GLES20.glGetUniformLocation(program, "sTexture");
+
+        int[] textureIds = new int[1];
+        GLES20.glGenTextures(1, textureIds, 0);
+        textureId = textureIds[0];
+
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+        surfaceTexture = new SurfaceTexture(textureId);
+        surface = new Surface(surfaceTexture);
+        surfaceTexture.setOnFrameAvailableListener(mOnFrameAvailableListener);
+    }
+
+    private void renderMediaCodec() {
+        surfaceTexture.updateTexImage();
+        GLES20.glUseProgram(program);
+
+        GLES20.glEnableVertexAttribArray(avPosition);
+        GLES20.glVertexAttribPointer(avPosition, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
+
+        GLES20.glEnableVertexAttribArray(afPosition);
+        GLES20.glVertexAttribPointer(afPosition, 2, GLES20.GL_FLOAT, false, 8, textureBuffer);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
+        GLES20.glUniform1i(samplerOES, 0);
+    }
+
+    private void render() {
+        if (isRenderMediaCodec) {
+            renderMediaCodec();
+        } else {
+            renderYUV();
+        }
+    }
+
+    Surface getSurface() {
+        return surface;
     }
 }

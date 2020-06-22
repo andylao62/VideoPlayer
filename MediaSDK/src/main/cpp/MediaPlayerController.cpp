@@ -99,6 +99,10 @@ void MediaPlayerController::start() {
     if (output == NULL) {
         return;
     }
+    if (decoder == NULL) {
+        return;
+    }
+    decoder->tryInitMediaCoder();
     output->play();
     decode();
 }

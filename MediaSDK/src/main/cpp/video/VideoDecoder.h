@@ -30,6 +30,8 @@ class VideoDecoder {
          * @param duration 音频时长
          */
         void fill(int streamIndex, AVStream *streams, int64_t duration);
+
+        void tryInitMediaCoder();
 };
 
 

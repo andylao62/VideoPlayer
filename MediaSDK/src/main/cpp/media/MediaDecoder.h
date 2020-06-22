@@ -36,6 +36,8 @@ private:
 
         int openAVCodec();
 
+        void tryInitMediaCoder();
+
         void decode();
 
         void release();

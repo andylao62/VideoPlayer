@@ -8,6 +8,9 @@
 #ifndef VIDEOPLAYER_VIDEO_H
 #define VIDEOPLAYER_VIDEO_H
 
+#define CODEC_YUV 0
+#define CODEC_MEDIACODEC 1
+
 #include "Audio.h"
 #include "AVPacketBlockQueue.h"
 
@@ -22,6 +25,9 @@ class Video {
         double delayTime = 0;
         double defaultDelayTime = 0.04;
         Audio *audio = NULL;
+        int codecType = CODEC_YUV;
+
+        AVBSFContext *abs_ctx = NULL;
     public:
         Video(PlayStatus *playStatus);
         ~Video();

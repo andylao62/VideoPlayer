@@ -146,6 +146,26 @@ public class MediaPlayer {
         }
     }
 
+    private boolean isSupportMediaCodec(String codecName) {
+        return VideoSupportUtils.isSupport(codecName);
+    }
+
+    private MediaCoder mMediaCoder;
+    private void initMediaCoder(String codecName, int width, int height, byte[] csd0, byte[] csd1) {
+        if (mSurfaceView != null && mSurfaceView.getSurface() != null) {
+            mMediaCoder = new MediaCoder(mSurfaceView.getSurface(), codecName, width, height, csd0, csd1);
+        }
+    }
+
+    private void mediaDecode(int size, byte[] data) {
+        if (mSurfaceView != null) {
+            mSurfaceView.useMediaCodecRender();
+        }
+        if (mMediaCoder != null) {
+            mMediaCoder.decode(size, data);
+        }
+    }
+
     private native void _prepare(String source);
     private native void _start();
     private native void _seekByPercent(float percent);
@@ -155,6 +175,7 @@ public class MediaPlayer {
     private native void _resume();
     private native void _stop();
     private native void _release();
+
     public native boolean isPlaying();
 
 }

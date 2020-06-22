@@ -18,6 +18,9 @@ private:
     jobject instance;
     jmethodID jmidPostEvent;
     jmethodID jmidRenderYUV;
+    jmethodID jmidSupportMediaCodec;
+    jmethodID jmidInitMediaCoder;
+    jmethodID jmidMediaDecode;
 public:
     JavaCaller(JavaVM *javaVM, JNIEnv *env, jobject *instance);
     ~JavaCaller();
@@ -32,6 +35,17 @@ public:
     void callJavaMethod(bool isWorkThread, int event, int arg1, int arg2);
 
     void callRenderYUV(int width, int height, uint8_t *fy, uint8_t *fu, uint8_t *fv);
+
+    /**
+     * 还是否支持硬解码
+     * @param codec_name
+     * @return
+     */
+    bool isSupportMediaCodec(const char *codec_name);
+
+    void initMediaCodec(const char *mime, int width, int height, int csd0_size, int csd1_size, uint8_t *csd_0, uint8_t *csd_1);
+
+    void mediaDecode(int size, uint8_t *data);
 };
 
 
