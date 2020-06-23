@@ -1,4 +1,4 @@
-package com.kejunyao.media.opengl;
+package com.kejunyao.media.widget;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

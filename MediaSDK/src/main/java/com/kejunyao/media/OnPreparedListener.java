@@ -7,5 +7,10 @@ package com.kejunyao.media;
  * @since 2020年05月31日
  */
 public interface OnPreparedListener {
-    void onPrepared();
+    /**
+     * 预备完毕回调方法
+     * @param mediaWidth 媒体文件宽度
+     * @param mediaHeight 媒体文件高度
+     */
+    void onPrepared(int mediaWidth, int mediaHeight);
 }

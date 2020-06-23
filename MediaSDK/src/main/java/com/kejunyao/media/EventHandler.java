@@ -38,7 +38,7 @@ class EventHandler extends Handler {
     public void handleMessage(@NonNull Message msg) {
         switch (msg.what) {
             case EVENT_PREPARED:
-                onPrepared();
+                onPrepared(msg.arg1, msg.arg2);
                 break;
             case EVENT_LOADING:
                 onLoad(msg.arg1 == 0);
@@ -73,10 +73,13 @@ class EventHandler extends Handler {
         sendMessage(what, 0, 0);
     }
 
-    private void onPrepared() {
+    private void onPrepared(int mediaWidth, int mediaHeight) {
         MediaPlayer player = mPlayerRef.get();
-        if (player != null && player.mOnPreparedListener != null) {
-            player.mOnPreparedListener.onPrepared();
+        if (player != null) {
+            player.autoFitSurfaceViewSize(mediaWidth, mediaHeight);
+            if (player.mOnPreparedListener != null) {
+                player.mOnPreparedListener.onPrepared(mediaWidth, mediaHeight);
+            }
         }
     }
 

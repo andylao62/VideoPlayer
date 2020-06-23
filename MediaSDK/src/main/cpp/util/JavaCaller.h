@@ -1,6 +1,9 @@
-//
-// Created by kejunyao on 2020/05/31.
-//
+/**
+ * C++调用Java类方法，调用器
+ *
+ * @author kejunyao
+ * @since 2020年05月31日
+ */
 
 #ifndef AUDIOPLAYER_JAVACALLER_H
 #define AUDIOPLAYER_JAVACALLER_H

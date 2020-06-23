@@ -1,6 +1,9 @@
-//
-// Created by kejunyao on 2020/05/31.
-//
+/**
+ * C++调用Java类方法，调用器
+ *
+ * @author kejunyao
+ * @since 2020年05月31日
+ */
 
 #include "JavaCaller.h"
 
@@ -108,16 +111,15 @@ void JavaCaller::initMediaCodec(const char *mime, int width, int height, int csd
 
 void JavaCaller::mediaDecode(int size, uint8_t *data) {
     JNIEnv *jniEnv;
-    if(jvm->AttachCurrentThread(&jniEnv, 0) != JNI_OK)
-    {
-        if(LOG_DEBUG) {
-            LOGE("call onCallComplete worng");
+    if (jvm->AttachCurrentThread(&jniEnv, 0) != JNI_OK) {
+        if (LOG_DEBUG) {
+            LOGE("call mediaDecode wrong");
         }
         return;
     }
     jbyteArray array = jniEnv->NewByteArray(size);
     jniEnv->SetByteArrayRegion(array, 0, size, reinterpret_cast<const jbyte *>(data));
-    jniEnv->CallVoidMethod(instance, jmidMediaDecode, size, data);
+    jniEnv->CallVoidMethod(instance, jmidMediaDecode, size, array);
     jniEnv->DeleteLocalRef(array);
     jvm->DetachCurrentThread();
 }

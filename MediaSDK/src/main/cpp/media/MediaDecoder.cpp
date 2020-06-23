@@ -144,7 +144,6 @@ void MediaDecoder::decode() {
 }
 
 void MediaDecoder::release() {
-
 }
 
 void MediaDecoder::tryInitMediaCoder() {

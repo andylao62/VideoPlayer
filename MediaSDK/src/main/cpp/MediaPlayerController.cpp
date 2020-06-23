@@ -60,7 +60,12 @@ void *prepareCallback(void *data) {
         result = ctrl->decoder->openAVCodec();
     }
     if (result == 0) {
-        ctrl->javaCaller->callJavaMethod(true, EVENT_PREPARED, 0, 0);
+        ctrl->javaCaller->callJavaMethod(
+                true,
+                EVENT_PREPARED,
+                ctrl->media->video->avCodecContext->width,
+                ctrl->media->video->avCodecContext->height
+                );
         if (ctrl->playStatus == NULL || ctrl->playStatus->isExit()) {
             ctrl->exit = true;
         }
@@ -89,6 +94,14 @@ void MediaPlayerController::prepare(const char *source) {
     pthread_create(&threadDecode, NULL, prepareCallback, this);
 }
 
+void *startCallback(void *data) {
+    MediaPlayerController *ctrl = (MediaPlayerController*) data;
+    ctrl->decoder->tryInitMediaCoder();
+    ctrl->output->play();
+    ctrl->decode();
+    return 0;
+}
+
 void MediaPlayerController::start() {
     if (isReleasing()) {
         return;
@@ -102,10 +115,9 @@ void MediaPlayerController::start() {
     if (decoder == NULL) {
         return;
     }
-    decoder->tryInitMediaCoder();
-    output->play();
-    decode();
+    pthread_create(&threadStart, NULL, startCallback, this);
 }
+
 
 
 void MediaPlayerController::seekByPercent(float percent) {

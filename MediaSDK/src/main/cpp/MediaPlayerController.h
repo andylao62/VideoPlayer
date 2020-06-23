@@ -24,22 +24,21 @@
 
 class MediaPlayerController {
     private:
-        Media *media = NULL;
-        MediaOutput *output = NULL;
-
-    private:
         pthread_mutex_t mutexReleasing;
         pthread_mutex_t mutexWorking;
         bool releasing = false;
         bool working = false;
 
     public:
+        Media *media = NULL;
         PlayStatus *playStatus = NULL;
         JavaCaller *javaCaller = NULL;
         pthread_t threadDecode;
         pthread_mutex_t mutexDecode;
+        pthread_t threadStart;
         MediaLoader *loader = NULL;
         MediaDecoder *decoder = NULL;
+        MediaOutput *output = NULL;
         bool exit = false;
     private:
         bool isReleasing();

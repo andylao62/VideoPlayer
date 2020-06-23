@@ -1,0 +1,5 @@
+<resources>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="living">直播</string>
+</resources>

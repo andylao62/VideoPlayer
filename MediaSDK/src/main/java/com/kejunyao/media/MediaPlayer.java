@@ -1,7 +1,9 @@
 package com.kejunyao.media;
 
 import android.os.Looper;
-import com.kejunyao.media.opengl.MediaSurfaceView;
+import android.view.ViewGroup;
+
+import com.kejunyao.media.widget.MediaSurfaceView;
 
 /**
  * 多媒体播放Controller
@@ -34,6 +36,28 @@ public class MediaPlayer {
             mEventHandler = new EventHandler(this, looper);
         } else {
             mEventHandler = null;
+        }
+    }
+
+    private boolean mAutoFitSurfaceViewSize;
+    public void setAutoFitSurfaceViewSize(boolean autoFit) {
+        mAutoFitSurfaceViewSize = autoFit;
+    }
+
+    void autoFitSurfaceViewSize(int width, int height) {
+        if (!mAutoFitSurfaceViewSize) {
+            return;
+        }
+        if (mSurfaceView != null && width > 0 && height > 0) {
+            ViewGroup.LayoutParams layoutParams = mSurfaceView.getLayoutParams();
+            if (layoutParams != null) {
+                int surfaceWidth = mSurfaceView.getResources().getDisplayMetrics().widthPixels;
+                int surfaceHeight = surfaceWidth * height / width;
+                layoutParams.width = surfaceWidth;
+                layoutParams.height = surfaceHeight;
+                mSurfaceView.requestLayout();
+            }
+
         }
     }
 

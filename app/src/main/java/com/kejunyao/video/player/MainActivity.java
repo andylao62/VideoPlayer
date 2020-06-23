@@ -6,13 +6,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.kejunyao.media.MediaLog;
 import com.kejunyao.media.MediaPlayer;
+import com.kejunyao.media.MediaPlayerActivity;
 import com.kejunyao.media.OnCompleteListener;
 import com.kejunyao.media.OnErrorListener;
 import com.kejunyao.media.OnLoadListener;
 import com.kejunyao.media.OnPauseResumeListener;
 import com.kejunyao.media.OnPreparedListener;
 import com.kejunyao.media.OnTimeInfoListener;
-import com.kejunyao.media.opengl.MediaSurfaceView;
+import com.kejunyao.media.TimeUtils;
+import com.kejunyao.media.widget.MediaSurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         mVolumeSeekBar = findViewById(R.id.seek_volume);
         mSurfaceView = findViewById(R.id.media_surface_view);
         mMediaPlayer.setSurfaceView(mSurfaceView);
+        mMediaPlayer.setAutoFitSurfaceViewSize(true);
         mVolumeSeekBar.setProgress((int) (mMediaPlayer.getVolumePercent() * 100));
         setVolumeProgress(mMediaPlayer.getVolumePercent());
 
@@ -51,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         mTimeInfoView = findViewById(R.id.time_info);
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
-            public void onPrepared() {
-                MediaLog.d(TAG, "onPrepared");
+            public void onPrepared(int mediaWidth, int mediaHeight) {
+                MediaLog.d(TAG, "onPrepared, mediaWidth: ", mediaWidth, ", mediaHeight: ", mediaHeight);
+
                 mMediaPlayer.start();
             }
         });
@@ -150,5 +154,9 @@ public class MainActivity extends AppCompatActivity {
         // mMediaPlayer.setDataSource("/sdcard/demo.mp4");
         // mMediaPlayer.setDataSource("/sdcard/out.mp4");
         mMediaPlayer.prepare();
+    }
+
+    public void mediaPlayerActivity(View view) {
+        MediaPlayerActivity.startActivity(this, "/sdcard/jwm1972.mp4");
     }
 }
