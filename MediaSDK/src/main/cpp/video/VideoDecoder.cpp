@@ -29,9 +29,9 @@ void VideoDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {
 
 void VideoDecoder::tryInitMediaCoder() {
     const char *codecName = ((const AVCodec *) video->avCodecContext->codec)->name;
-    bool supportMediaCodec = false;
+    bool supportMediaCodec = javaCaller->isSupportMediaCodec(codecName);
     const AVBitStreamFilter *bsFilter = NULL;
-    if (supportMediaCodec = javaCaller->isSupportMediaCodec(codecName)) {
+    if (supportMediaCodec) {
         LOGE("当前设备支持硬解码当前视频");
         if (strcasecmp(codecName, "h264") == 0) {
             bsFilter = av_bsf_get_by_name("h264_mp4toannexb");

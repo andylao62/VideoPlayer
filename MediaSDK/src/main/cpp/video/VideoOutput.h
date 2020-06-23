@@ -35,7 +35,7 @@ class VideoOutput {
          * @return YUV420PFrame
          */
         AVFrame *swsToYUV420P(AVFrame *avFrame);
-        double getFrameDiffTime(AVFrame *avFrame);
+        double getFrameDiffTime(double pts);
         double getDelayTime(double diff);
         void play();
         void release();

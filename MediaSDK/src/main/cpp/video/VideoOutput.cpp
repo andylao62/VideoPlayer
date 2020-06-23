@@ -53,16 +53,69 @@ void *playVideoCallback(void *data) {
             avPacket = NULL;
             continue;
         }
-        pthread_mutex_lock(&out->mutexDecode);
-        if (avcodec_send_packet(out->video->avCodecContext, avPacket) != 0) {
-            av_packet_free(&avPacket);
-            av_free(avPacket);
+        if (out->video->codecType == CODEC_MEDIACODEC) {
+            if (av_bsf_send_packet(out->video->abs_ctx, avPacket) != 0) {
+                av_packet_free(&avPacket);
+                av_free(avPacket);
+                avPacket = NULL;
+                continue;
+            }
+            while (av_bsf_receive_packet(out->video->abs_ctx, avPacket) == 0) {
+                LOGE("开始解码");
+
+                double diff = out->getFrameDiffTime(avPacket->pts);
+                LOGE("diff is %f", diff);
+                av_usleep(out->getDelayTime(diff) * 1000000);
+                out->javaCaller->mediaDecode(avPacket->size, avPacket->data);
+                av_packet_free(&avPacket);
+                av_free(avPacket);
+                continue;
+            }
             avPacket = NULL;
-            pthread_mutex_unlock(&out->mutexDecode);
-            continue;
-        }
-        AVFrame *avFrame = av_frame_alloc();
-        if (avcodec_receive_frame(out->video->avCodecContext, avFrame) != 0) {
+        } else if (out->video->codecType == CODEC_YUV) {
+            pthread_mutex_lock(&out->mutexDecode);
+            if (avcodec_send_packet(out->video->avCodecContext, avPacket) != 0) {
+                av_packet_free(&avPacket);
+                av_free(avPacket);
+                avPacket = NULL;
+                pthread_mutex_unlock(&out->mutexDecode);
+                continue;
+            }
+            AVFrame *avFrame = av_frame_alloc();
+            if (avcodec_receive_frame(out->video->avCodecContext, avFrame) != 0) {
+                av_frame_free(&avFrame);
+                av_free(avFrame);
+                avFrame = NULL;
+                av_packet_free(&avPacket);
+                av_free(avPacket);
+                avPacket = NULL;
+                pthread_mutex_unlock(&out->mutexDecode);
+                continue;
+            }
+            if (avFrame->format == AV_PIX_FMT_YUV420P) {
+                double diff = out->getFrameDiffTime(av_frame_get_best_effort_timestamp(avFrame));
+                av_usleep(out->getDelayTime(diff) * 1000000);
+                out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
+                                               out->video->avCodecContext->height,
+                                               avFrame->data[0],
+                                               avFrame->data[1],
+                                               avFrame->data[2]
+                );
+            } else {
+                AVFrame *frameYUV420P = out->swsToYUV420P(avFrame);
+                if (frameYUV420P != NULL) {
+                    out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
+                                                   out->video->avCodecContext->height,
+                                                   frameYUV420P->data[0],
+                                                   frameYUV420P->data[1],
+                                                   frameYUV420P->data[2]
+                    );
+                    av_frame_free(&frameYUV420P);
+                    av_free(frameYUV420P);
+                    frameYUV420P = NULL;
+                }
+            }
+
             av_frame_free(&avFrame);
             av_free(avFrame);
             avFrame = NULL;
@@ -70,40 +123,8 @@ void *playVideoCallback(void *data) {
             av_free(avPacket);
             avPacket = NULL;
             pthread_mutex_unlock(&out->mutexDecode);
-            continue;
+            LOGE("子线程视频解码成功.");
         }
-        if (avFrame->format == AV_PIX_FMT_YUV420P) {
-            double diff = out->getFrameDiffTime(avFrame);
-            av_usleep(out->getDelayTime(diff) * 1000000);
-            out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
-                                           out->video->avCodecContext->height,
-                                           avFrame->data[0],
-                                           avFrame->data[1],
-                                           avFrame->data[2]
-            );
-        } else {
-            AVFrame *frameYUV420P = out->swsToYUV420P(avFrame);
-            if (frameYUV420P != NULL) {
-                out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
-                                               out->video->avCodecContext->height,
-                                               frameYUV420P->data[0],
-                                               frameYUV420P->data[1],
-                                               frameYUV420P->data[2]
-                );
-                av_frame_free(&frameYUV420P);
-                av_free(frameYUV420P);
-                frameYUV420P = NULL;
-            }
-        }
-
-        av_frame_free(&avFrame);
-        av_free(avFrame);
-        avFrame = NULL;
-        av_packet_free(&avPacket);
-        av_free(avPacket);
-        avPacket = NULL;
-        pthread_mutex_unlock(&out->mutexDecode);
-        LOGE("子线程视频解码成功.");
     }
     pthread_exit(&out->threadPlay);
 }
@@ -167,8 +188,7 @@ void VideoOutput::play() {
 void VideoOutput::release() {
 }
 
-double VideoOutput::getFrameDiffTime(AVFrame *avFrame) {
-    double pts = av_frame_get_best_effort_timestamp(avFrame);
+double VideoOutput::getFrameDiffTime(double pts) {
     if (pts == AV_NOPTS_VALUE) {
         pts = 0;
     }
