@@ -32,8 +32,6 @@ public:
     AudioDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Audio *audio);
     ~AudioDecoder();
 
-
-
     void decode();
 
     /**
@@ -43,8 +41,6 @@ public:
      * @param duration 音频时长
      */
     void fill(int streamIndex, AVStream *streams, int64_t duration);
-
-    void release();
 
 };
 

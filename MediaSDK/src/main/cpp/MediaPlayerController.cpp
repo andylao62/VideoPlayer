@@ -21,6 +21,8 @@ MediaPlayerController::~MediaPlayerController() {
     pthread_mutex_destroy(&mutexReleasing);
     pthread_mutex_destroy(&mutexWorking);
     pthread_mutex_destroy(&mutexDecode);
+    media = NULL;
+    playStatus = NULL;
 }
 
 bool MediaPlayerController::isReleasing() {
@@ -74,7 +76,7 @@ void *prepareCallback(void *data) {
         ctrl->exit = true;
     }
     pthread_mutex_unlock(&ctrl->mutexDecode);
-    pthread_exit(&ctrl->threadDecode);
+    return 0;
 }
 
 void MediaPlayerController::prepare(const char *source) {
@@ -190,7 +192,7 @@ void *decodeCallback(void *data) {
         }
     }
     ctrl->exit = true;
-    pthread_exit(&ctrl->threadDecode);
+    return 0;
 }
 
 void MediaPlayerController::decode() {
@@ -204,11 +206,30 @@ void MediaPlayerController::release() {
     if (!isWorking()) {
         return;
     }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 11111111");
+    }
     setReleasing(true);
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 2222222222");
+    }
     playStatus->setExit(true);
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 3333333333");
+    }
+    pthread_join(threadDecode, NULL);
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 555555555555");
+    }
     pthread_mutex_lock(&mutexDecode);
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 666666666666");
+    }
     if (output != NULL) {
         output->release();
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 7777777777");
     }
     int sleepCount = 0;
     while (!exit) {
@@ -221,27 +242,49 @@ void MediaPlayerController::release() {
         sleepCount++;
         av_usleep(1000 * 10); // 暂停10毫秒
     }
-    if (decoder != NULL) {
-        decoder->release();
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 8888888888");
     }
     if (media != NULL) {
         media->release();
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 999999999999");
     }
     if (output != NULL) {
         delete(output);
         output = NULL;
     }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 1010010100101");
+    }
     if (decoder != NULL) {
         delete(decoder);
         decoder = NULL;
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 12121212121212");
     }
     if (media != NULL) {
         delete(media);
         media = NULL;
     }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 13131313131313");
+    }
+    if (loader != NULL) {
+        delete(loader);
+        loader = NULL;
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 141414141414");
+    }
     if (playStatus != NULL) {
         delete(playStatus);
         playStatus = NULL;
+    }
+    if (LOG_DEBUG) {
+        LOGD("MediaPlayerController::release(), 15151515151515");
     }
     pthread_mutex_unlock(&mutexDecode);
     setReleasing(false);

@@ -15,10 +15,14 @@ Media::Media(const char *source, PlayStatus *playStatus) {
 }
 
 Media::~Media() {
-    delete(audio);
-    audio = NULL;
-    delete(video);
-    video = NULL;
+    if (audio != NULL) {
+        delete(audio);
+        audio = NULL;
+    }
+    if (video != NULL) {
+        delete(video);
+        video = NULL;
+    }
 }
 
 void Media::release() {

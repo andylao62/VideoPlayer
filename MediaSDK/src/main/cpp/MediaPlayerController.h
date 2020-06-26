@@ -24,6 +24,8 @@
 
 class MediaPlayerController {
     private:
+        pthread_t threadStart;
+        pthread_t threadDecode;
         pthread_mutex_t mutexReleasing;
         pthread_mutex_t mutexWorking;
         bool releasing = false;
@@ -33,9 +35,7 @@ class MediaPlayerController {
         Media *media = NULL;
         PlayStatus *playStatus = NULL;
         JavaCaller *javaCaller = NULL;
-        pthread_t threadDecode;
         pthread_mutex_t mutexDecode;
-        pthread_t threadStart;
         MediaLoader *loader = NULL;
         MediaDecoder *decoder = NULL;
         MediaOutput *output = NULL;

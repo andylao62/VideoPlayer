@@ -15,6 +15,9 @@ AudioOutput::AudioOutput(JavaCaller *javaCaller, PlayStatus *playStatus, Audio *
 }
 
 AudioOutput::~AudioOutput() {
+    javaCaller = NULL;
+    playStatus = NULL;
+    audio = NULL;
     pthread_mutex_destroy(&mutexDecode);
 }
 

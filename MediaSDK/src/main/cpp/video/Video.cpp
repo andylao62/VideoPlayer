@@ -12,6 +12,8 @@ Video::Video(PlayStatus *playStatus) {
 }
 
 Video::~Video() {
+    codecPar = NULL;
+    audio = NULL;
 }
 
 void Video::release() {

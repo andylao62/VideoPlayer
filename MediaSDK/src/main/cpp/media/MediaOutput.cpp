@@ -20,6 +20,8 @@ MediaOutput::~MediaOutput() {
     javaCaller = NULL;
     playStatus = NULL;
     media = NULL;
+    audioOutput = NULL;
+    videoOutput = NULL;
     pthread_mutex_destroy(&mutexSeek);
 }
 
@@ -63,6 +65,12 @@ void MediaOutput::setVolume(float percent) {
 }
 
 void MediaOutput::release() {
+    if (videoOutput != NULL) {
+        videoOutput->release();
+    }
+    if (audioOutput != NULL) {
+        audioOutput->release();
+    }
 }
 
 void MediaOutput::seekByPercent(float percent) {

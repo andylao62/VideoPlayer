@@ -14,9 +14,9 @@ AudioDecoder::AudioDecoder(JavaCaller *javaCaller, PlayStatus *playStatus, Audio
 }
 
 AudioDecoder::~AudioDecoder() {
-}
-
-void AudioDecoder::release() {
+    javaCaller = NULL;
+    playStatus = NULL;
+    audio = NULL;
 }
 
 void AudioDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {

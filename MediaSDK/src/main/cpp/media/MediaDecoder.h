@@ -39,8 +39,6 @@ private:
         void tryInitMediaCoder();
 
         void decode();
-
-        void release();
 };
 
 

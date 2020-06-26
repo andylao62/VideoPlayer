@@ -1,7 +1,7 @@
 package com.kejunyao.media;
 
 import android.os.Looper;
-import android.view.ViewGroup;
+import android.view.View;
 
 import com.kejunyao.media.widget.MediaSurfaceView;
 
@@ -27,6 +27,7 @@ public class MediaPlayer {
     }
 
     private EventHandler mEventHandler;
+    final SurfaceViewResizer mSurfaceViewResizer = new SurfaceViewResizer();
 
     public MediaPlayer() {
         Looper looper;
@@ -39,26 +40,12 @@ public class MediaPlayer {
         }
     }
 
-    private boolean mAutoFitSurfaceViewSize;
-    public void setAutoFitSurfaceViewSize(boolean autoFit) {
-        mAutoFitSurfaceViewSize = autoFit;
+    public void setResizeSurfaceViewEnabled(boolean enabled) {
+        mSurfaceViewResizer.mResizeEnabled = enabled;
     }
 
-    void autoFitSurfaceViewSize(int width, int height) {
-        if (!mAutoFitSurfaceViewSize) {
-            return;
-        }
-        if (mSurfaceView != null && width > 0 && height > 0) {
-            ViewGroup.LayoutParams layoutParams = mSurfaceView.getLayoutParams();
-            if (layoutParams != null) {
-                int surfaceWidth = mSurfaceView.getResources().getDisplayMetrics().widthPixels;
-                int surfaceHeight = surfaceWidth * height / width;
-                layoutParams.width = surfaceWidth;
-                layoutParams.height = surfaceHeight;
-                mSurfaceView.requestLayout();
-            }
-
-        }
+    void resizeSurfaceView(View surfaceView, int targetSurfaceWidth, int sourceSurfaceHeight) {
+        mSurfaceViewResizer.resizeSurfaceView(surfaceView, targetSurfaceWidth, sourceSurfaceHeight);
     }
 
     OnPreparedListener mOnPreparedListener;
@@ -151,11 +138,15 @@ public class MediaPlayer {
         _release();
     }
 
-    private void release() {
+    public void release() {
         mOnPreparedListener = null;
         mOnLoadListener = null;
         mOnPauseResumeListener = null;
-        _release();
+        mOnTimeInfoListener = null;
+        mOnErrorListener = null;
+        mOnCompleteListener = null;
+        mSurfaceView = null;
+
     }
 
     private void postEventFromNative(int what, int arg1, int arg2) {

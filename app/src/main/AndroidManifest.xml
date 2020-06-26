@@ -21,7 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name="com.kejunyao.media.MediaPlayerActivity"
-            android:launchMode="standard"/>
+            android:theme="@style/MediaPlayerTheme"
+            android:launchMode="standard"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 
 </manifest>

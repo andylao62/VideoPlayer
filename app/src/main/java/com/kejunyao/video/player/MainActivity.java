@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         mVolumeSeekBar = findViewById(R.id.seek_volume);
         mSurfaceView = findViewById(R.id.media_surface_view);
         mMediaPlayer.setSurfaceView(mSurfaceView);
-        mMediaPlayer.setAutoFitSurfaceViewSize(true);
+        mMediaPlayer.setResizeSurfaceViewEnabled(true);
         mVolumeSeekBar.setProgress((int) (mMediaPlayer.getVolumePercent() * 100));
         setVolumeProgress(mMediaPlayer.getVolumePercent());
 

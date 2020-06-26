@@ -19,6 +19,14 @@ MediaDecoder::~MediaDecoder() {
     javaCaller = NULL;
     playStatus = NULL;
     media = NULL;
+    if (audioDecoder != NULL) {
+        delete(audioDecoder);
+        audioDecoder = NULL;
+    }
+    if (videoDecoder != NULL) {
+        delete(videoDecoder);
+        videoDecoder = NULL;
+    }
 }
 
 int MediaDecoder::openAVCodec() {
@@ -141,9 +149,6 @@ void MediaDecoder::decode() {
     if (LOG_DEBUG) {
         LOGD("MediaDecoder::decode()，解码完成。");
     }
-}
-
-void MediaDecoder::release() {
 }
 
 void MediaDecoder::tryInitMediaCoder() {
