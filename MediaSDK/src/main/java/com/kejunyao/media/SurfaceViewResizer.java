@@ -3,6 +3,8 @@ package com.kejunyao.media;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kejunyao.media.util.MediaLog;
+
 /**
  * 媒体View宽高及方向调整器
  *

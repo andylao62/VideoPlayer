@@ -1,4 +1,4 @@
-package com.kejunyao.media;
+package com.kejunyao.media.util;
 
 /**
  * 日志

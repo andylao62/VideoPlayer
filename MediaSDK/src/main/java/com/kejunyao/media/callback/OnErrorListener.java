@@ -1,4 +1,6 @@
-package com.kejunyao.media;
+package com.kejunyao.media.callback;
+
+import com.kejunyao.media.ErrorCode;
 
 /**
  * 错误Listener

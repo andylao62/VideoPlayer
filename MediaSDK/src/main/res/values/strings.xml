@@ -2,4 +2,6 @@
     <string name="play">播放</string>
     <string name="pause">暂停</string>
     <string name="living">直播</string>
+    <string name="no_medial_source">请设置媒体文件来源source！</string>
+    <string name="not_read_storage_permission">没有读取本地媒体文件权限，无法为您播放！</string>
 </resources>

@@ -1,7 +1,7 @@
-package com.kejunyao.media;
+package com.kejunyao.media.util;
 
 /**
- * $类描述$
+ * 时间工具类
  *
  * @author kejunyao
  * @since 2020年06月01日

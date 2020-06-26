@@ -2,56 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/content_root_view"
     android:background="@android:color/black">
 
-    <FrameLayout
-        android:id="@+id/surface_layout"
+    <com.kejunyao.media.widget.MediaPlayerView
+        android:id="@+id/media_player_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
-        <com.kejunyao.media.widget.MediaSurfaceView
-            android:id="@+id/media_surface_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <SeekBar
-                android:id="@+id/seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="100" />
-            <TextView
-                android:id="@+id/media_current_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/seek_bar"
-                android:layout_alignParentLeft="true"
-                android:text="00:00"
-                android:textColor="@android:color/white"
-                android:textSize="10dp" />
-            <TextView
-                android:id="@+id/media_total_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/seek_bar"
-                android:layout_alignParentRight="true"
-                android:text="00:00"
-                android:textColor="@android:color/white"
-                android:textSize="10dp" />
-            <TextView
-                android:id="@+id/play"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_below="@id/seek_bar"
-                android:layout_alignParentLeft="true"
-                android:gravity="center_vertical"
-                android:text="@string/play"
-                android:textColor="@android:color/white"
-                android:textSize="14dp" />
-        </RelativeLayout>
-    </FrameLayout>
+        android:layout_gravity="center"/>
+
 </FrameLayout>

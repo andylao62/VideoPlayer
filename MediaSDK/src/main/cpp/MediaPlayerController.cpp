@@ -101,6 +101,7 @@ void *startCallback(void *data) {
     ctrl->decoder->tryInitMediaCoder();
     ctrl->output->play();
     ctrl->decode();
+    ctrl->javaCaller->callJavaMethod(true, EVENT_RESUME, 0, 0);
     return 0;
 }
 

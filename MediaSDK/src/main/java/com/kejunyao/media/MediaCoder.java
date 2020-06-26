@@ -4,6 +4,9 @@ import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.view.Surface;
 
+import com.kejunyao.media.util.MediaLog;
+import com.kejunyao.media.util.SupportUtils;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -25,7 +28,7 @@ class MediaCoder {
     MediaCoder(Surface surface, String codecName, int width, int height, byte[] csd0, byte[] csd1) {
         this.surface = surface;
         try {
-            String mime = VideoSupportUtils.findCodecName(codecName);
+            String mime = SupportUtils.findCodecName(codecName);
             mediaFormat = MediaFormat.createVideoFormat(mime, width, height);
             mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, width * height);
             mediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(csd0));

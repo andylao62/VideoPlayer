@@ -3,6 +3,13 @@ package com.kejunyao.media;
 import android.os.Looper;
 import android.view.View;
 
+import com.kejunyao.media.callback.OnCompleteListener;
+import com.kejunyao.media.callback.OnErrorListener;
+import com.kejunyao.media.callback.OnLoadListener;
+import com.kejunyao.media.callback.OnPauseResumeListener;
+import com.kejunyao.media.callback.OnPreparedListener;
+import com.kejunyao.media.callback.OnTimeInfoListener;
+import com.kejunyao.media.util.SupportUtils;
 import com.kejunyao.media.widget.MediaSurfaceView;
 
 /**
@@ -44,7 +51,7 @@ public class MediaPlayer {
         mSurfaceViewResizer.mResizeEnabled = enabled;
     }
 
-    void resizeSurfaceView(View surfaceView, int targetSurfaceWidth, int sourceSurfaceHeight) {
+    public void resizeSurfaceView(View surfaceView, int targetSurfaceWidth, int sourceSurfaceHeight) {
         mSurfaceViewResizer.resizeSurfaceView(surfaceView, targetSurfaceWidth, sourceSurfaceHeight);
     }
 
@@ -162,7 +169,7 @@ public class MediaPlayer {
     }
 
     private boolean isSupportMediaCodec(String codecName) {
-        return VideoSupportUtils.isSupport(codecName);
+        return SupportUtils.isSupport(codecName);
     }
 
     private MediaCoder mMediaCoder;

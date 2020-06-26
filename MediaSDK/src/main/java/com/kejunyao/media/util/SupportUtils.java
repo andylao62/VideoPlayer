@@ -1,22 +1,20 @@
-package com.kejunyao.media;
+package com.kejunyao.media.util;
 
 import android.media.MediaCodecList;
-
-import java.util.HashMap;
-import java.util.Map;
+import androidx.collection.ArrayMap;
 
 /**
- * 当前设备是否支持硬解码判断工具类
+ * 兼容工具类
  *
  * @author kejunyao
  * @since 2020年05月30日
  */
-final class VideoSupportUtils {
+public final class SupportUtils {
 
-    private VideoSupportUtils() {
+    private SupportUtils() {
     }
 
-    private static Map<String, String> sCodecMap = new HashMap<>();
+    private static ArrayMap<String, String> sCodecMap = new ArrayMap<>();
 
     static {
         sCodecMap.put("h264", "video/avc");
@@ -38,4 +36,5 @@ final class VideoSupportUtils {
         }
         return false;
     }
+
 }

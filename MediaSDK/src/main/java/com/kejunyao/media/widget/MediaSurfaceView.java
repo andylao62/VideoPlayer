@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.Surface;
 
 /**
- * 多媒体SurfaceView
+ * 多媒体视图渲染SurfaceView
  *
  * @author kejunyao
  * @since 2020年06月19日
