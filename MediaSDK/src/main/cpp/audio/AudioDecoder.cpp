@@ -25,6 +25,7 @@ void AudioDecoder::fill(int streamIndex, AVStream *streams, int64_t duration) {
         audio->codecPar = streams->codecpar;
         audio->setSampleRate(streams->codecpar->sample_rate);
         audio->duration = duration;
+        audio->durationInMills = duration / AV_TIME_BASE;
         audio->timeBase = streams->time_base;
         if (LOG_DEBUG) {
             LOGD("AudioDecoder::fill, find AVCodecParameters");

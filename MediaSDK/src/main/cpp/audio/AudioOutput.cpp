@@ -32,7 +32,7 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
                         true,
                         EVENT_TIME_INFO,
                         output->audio->clock,
-                        output->audio->durationInSecond()
+                        output->audio->durationInMills
                         );
             }
             (*output->pcmBufferQueue)->Enqueue(
@@ -264,7 +264,7 @@ int AudioOutput::resample() {
         if (audio == NULL) {
             return 0;
         }
-        if (playStatus->isSeek()) {
+        if (playStatus->seek) {
             av_usleep(1000 * 100);
             continue;
         }

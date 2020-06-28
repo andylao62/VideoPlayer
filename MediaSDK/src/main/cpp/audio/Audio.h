@@ -25,6 +25,8 @@ class Audio {
         int sampleRate = 0;
         /** 音频时长 */
         int64_t duration = 0;
+        /** 音频时长（毫秒） */
+        int durationInMills = 0;
         AVRational timeBase;
         /** 当前时间 */
         double nowTime = 0;
@@ -37,11 +39,6 @@ class Audio {
         void updateClock();
         bool shouldRefresh();
         void release();
-
-        /**
-         * 时长转为秒
-         */
-        int durationInSecond();
 
         void reset();
 

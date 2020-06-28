@@ -131,15 +131,23 @@ public class MediaPlayerView extends FrameLayout {
         postDelayed(mToolBarShownToggle, DURATION_TOOL_BAR_SHOW);
     }
 
+    private boolean mTrackingTouch = false;
     /**
      * 设置监听媒体播放进度Listener
      */
     private void setPlayProgressListener() {
         mPlayProgressSeekBar.setOnSeekBarChangeListener(new SeekBarChangeAdapter() {
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mTrackingTouch = true;
+            }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 float percent = (float) seekBar.getProgress() / (float) seekBar.getMax();
                 mMediaPlayer.seek(percent);
+                mTrackingTouch = false;
             }
         });
     }
@@ -182,6 +190,9 @@ public class MediaPlayerView extends FrameLayout {
         mMediaPlayer.setOnTimeInfoListener(new OnTimeInfoListener() {
             @Override
             public void onTimeInfo(int currentTime, int totalTime) {
+                if (mTrackingTouch) {
+                    return;
+                }
                 if (totalTime <= 0) {
                     if (mPlayProgressSeekBar.isEnabled()) {
                         mPlayProgressSeekBar.setEnabled(false);

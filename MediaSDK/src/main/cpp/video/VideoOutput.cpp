@@ -25,7 +25,7 @@ VideoOutput::~VideoOutput() {
 void *playVideoCallback(void *data) {
     VideoOutput *out = (VideoOutput *) (data);
     while (out->playStatus != NULL && !out->playStatus->isExit()) {
-        if (out->playStatus->isSeek()) {
+        if (out->playStatus->seek) {
             av_usleep(1000 * 100);
             continue;
         }
@@ -61,11 +61,11 @@ void *playVideoCallback(void *data) {
                 continue;
             }
             while (av_bsf_receive_packet(out->video->abs_ctx, avPacket) == 0) {
-                if (LOG_DEBUG) {
-                    LOGD("开始硬件解码....");
-                }
+//                if (LOG_DEBUG) {
+//                    LOGD("开始硬件解码....");
+//                }
                 double diff = out->getFrameDiffTime(avPacket->pts);
-                av_usleep(out->getDelayTime(diff) * 1000000);
+                av_usleep(out->getDelayTime(diff) * AV_TIME_BASE);
                 out->javaCaller->mediaDecode(avPacket->size, avPacket->data);
                 av_packet_free(&avPacket);
                 av_free(avPacket);

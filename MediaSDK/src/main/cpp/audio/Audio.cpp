@@ -51,10 +51,6 @@ void Audio::release() {
     }
 }
 
-int Audio::durationInSecond() {
-    return duration / AV_TIME_BASE;
-}
-
 void Audio::reset() {
     clock = 0;
     lastClock = 0;
