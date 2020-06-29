@@ -17,6 +17,7 @@ extern "C" {
 #include "JavaCaller.h"
 #include "PlayStatus.h"
 #include "Video.h"
+#include <Constant.h>
 
 class VideoOutput {
     public:

@@ -26,11 +26,11 @@ void *playVideoCallback(void *data) {
     VideoOutput *out = (VideoOutput *) (data);
     while (out->playStatus != NULL && !out->playStatus->isExit()) {
         if (out->playStatus->seek) {
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         }
         if (out->playStatus->isPause()) {
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         }
         if (out->video->queue->size() == 0) { // 加载中
@@ -38,7 +38,7 @@ void *playVideoCallback(void *data) {
                 out->playStatus->setLoad(true);
                 out->javaCaller->callJavaMethod(true, EVENT_LOADING, 0, 0);
             }
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         } else { // 加载完成
             if (out->playStatus->isLoad()) {
@@ -94,7 +94,7 @@ void *playVideoCallback(void *data) {
             }
             if (avFrame->format == AV_PIX_FMT_YUV420P) {
                 double diff = out->getFrameDiffTime(av_frame_get_best_effort_timestamp(avFrame));
-                av_usleep(out->getDelayTime(diff) * 1000000);
+                av_usleep(out->getDelayTime(diff) * AV_TIME_BASE);
                 out->javaCaller->callRenderYUV(out->video->avCodecContext->width,
                                                out->video->avCodecContext->height,
                                                avFrame->data[0],

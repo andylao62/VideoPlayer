@@ -24,8 +24,6 @@
 
 class MediaPlayerController {
     private:
-        pthread_t threadStart;
-        pthread_t threadDecode;
         pthread_mutex_t mutexReleasing;
         pthread_mutex_t mutexWorking;
         bool releasing = false;
@@ -39,6 +37,8 @@ class MediaPlayerController {
         MediaLoader *loader = NULL;
         MediaDecoder *decoder = NULL;
         MediaOutput *output = NULL;
+        pthread_t threadStart;
+        pthread_t threadDecode;
         bool exit = false;
     private:
         bool isReleasing();

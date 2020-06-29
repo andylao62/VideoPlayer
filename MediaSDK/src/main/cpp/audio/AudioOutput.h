@@ -14,6 +14,7 @@
 #include "Log.h"
 #include "EventCode.h"
 #include "ErrorCode.h"
+#include <Constant.h>
 
 extern "C" {
     #include <libswresample/swresample.h>

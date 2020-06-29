@@ -35,6 +35,9 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
                         output->audio->durationInMills
                         );
             }
+//            if (LOG_DEBUG) {
+//                LOGD("pcmBufferCallBack, current: %d, total: %ld", output->audio->clock, output->audio->durationInMills);
+//            }
             (*output->pcmBufferQueue)->Enqueue(
                     output->pcmBufferQueue,
                     (char *) output->audio->buffer,
@@ -265,7 +268,7 @@ int AudioOutput::resample() {
             return 0;
         }
         if (playStatus->seek) {
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         }
         if(audio->queue->size() == 0) { // 加载中
@@ -273,7 +276,7 @@ int AudioOutput::resample() {
                 playStatus->setLoad(true);
                 javaCaller->callJavaMethod(true, EVENT_LOADING, 0, 0);
             }
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         } else { // 加载完成
             if(playStatus->isLoad()) {

@@ -102,7 +102,7 @@ void *startCallback(void *data) {
     ctrl->output->play();
     ctrl->decode();
     ctrl->javaCaller->callJavaMethod(true, EVENT_RESUME, 0, 0);
-    return 0;
+    pthread_exit(&ctrl->threadStart);
 }
 
 void MediaPlayerController::start() {
@@ -193,7 +193,7 @@ void *decodeCallback(void *data) {
         }
     }
     ctrl->exit = true;
-    return 0;
+    pthread_exit(&ctrl->threadDecode);
 }
 
 void MediaPlayerController::decode() {
@@ -220,7 +220,7 @@ void MediaPlayerController::release() {
             exit = true;
         }
         sleepCount++;
-        av_usleep(1000 * 10); // 暂停10毫秒
+        av_usleep(MILLI_SECOND * 10); // 暂停10毫秒
     }
     if (media != NULL) {
         media->release();

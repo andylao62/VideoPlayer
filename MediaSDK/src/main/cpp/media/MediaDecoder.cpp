@@ -111,11 +111,11 @@ void MediaDecoder::decode() {
             break;
         }
         if (playStatus->seek) {
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         }
         if (media->audio->queue->size() > 40) {
-            av_usleep(1000 * 100);
+            av_usleep(MILLI_SECOND * 100);
             continue;
         }
         AVPacket *avPacket = av_packet_alloc();
@@ -135,11 +135,11 @@ void MediaDecoder::decode() {
             avPacket = NULL;
             while (playStatus != NULL && !playStatus->isExit()) {
                 if (media->audio->queue->size() > 0) {
-                    av_usleep(1000 * 100);
+                    av_usleep(MILLI_SECOND * 100);
                     continue;
                 }
                 if (playStatus != NULL && !playStatus->seek) {
-                    av_usleep(1000 * 500);
+                    av_usleep(MILLI_SECOND * 100);
                     playStatus->setExit(true);
                 }
                 break;

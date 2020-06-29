@@ -16,6 +16,7 @@ extern "C" {
 #include "JavaCaller.h"
 #include "PlayStatus.h"
 #include "Media.h"
+#include <Constant.h>
 
 class MediaDecoder {
     private:
