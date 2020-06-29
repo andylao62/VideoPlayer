@@ -82,7 +82,7 @@ void MediaOutput::seekByPercent(float percent) {
     }
 }
 
-void MediaOutput::seek(int second) {
+void MediaOutput::seek(int64_t second) {
     if (LOG_DEBUG) {
         LOGD("MediaOutput::seek, second: %d", second, ", duration: %d", media->audio->durationInMills);
     }
@@ -101,7 +101,7 @@ void MediaOutput::seek(int second) {
     if (second < 0 && second > media->audio->durationInMills) {
         return;
     }
-    playStatus->seek = true;
+    playStatus->setSeek(true);
     pthread_mutex_lock(&mutexSeek);
     int64_t rel = second * AV_TIME_BASE;
     avformat_seek_file(media->avFormatContext, -1, INT64_MIN, rel, INT64_MAX, 0);
@@ -120,6 +120,6 @@ void MediaOutput::seek(int second) {
         pthread_mutex_unlock(&videoOutput->mutexDecode);
     }
     pthread_mutex_unlock(&mutexSeek);
-    playStatus->seek = false;
+    playStatus->setSeek(false);
 }
 

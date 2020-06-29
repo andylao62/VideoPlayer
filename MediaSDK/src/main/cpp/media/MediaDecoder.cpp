@@ -110,7 +110,7 @@ void MediaDecoder::decode() {
         if (media->avFormatContext == NULL) {
             break;
         }
-        if (playStatus->seek) {
+        if (playStatus->isSeek()) {
             av_usleep(MILLI_SECOND * 100);
             continue;
         }
@@ -138,7 +138,7 @@ void MediaDecoder::decode() {
                     av_usleep(MILLI_SECOND * 100);
                     continue;
                 }
-                if (playStatus != NULL && !playStatus->seek) {
+                if (playStatus != NULL && !playStatus->isSeek()) {
                     av_usleep(MILLI_SECOND * 100);
                     playStatus->setExit(true);
                 }

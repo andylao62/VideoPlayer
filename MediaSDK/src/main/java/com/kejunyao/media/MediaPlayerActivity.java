@@ -3,12 +3,11 @@ package com.kejunyao.media;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.kejunyao.media.util.FileUtils;
 import com.kejunyao.media.util.PermissionUtils;
@@ -43,9 +42,9 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         );
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_media_player);
         mMediaPlayerView = findViewById(R.id.media_player_view);
-        mMediaPlayerView.setResizeSurfaceViewEnabled(true);
         mSource = getIntent().getStringExtra(PARAM_SOURCE);
         if (TextUtils.isEmpty(mSource)) {
             Toast.makeText(getApplicationContext(), R.string.no_medial_source, Toast.LENGTH_LONG).show();
@@ -61,16 +60,6 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
     private void play() {
         mMediaPlayerView.prepare(mSource);
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        refreshStatusBarShown();
-        mMediaPlayerView.resizeMediaView(
-                getResources().getDisplayMetrics().widthPixels,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-        );
     }
 
     @Override
@@ -100,19 +89,5 @@ public class MediaPlayerActivity extends AppCompatActivity {
         mMediaPlayerView.stop();
         mMediaPlayerView.release();
         super.onDestroy();
-    }
-
-    /**
-     * 刷新系统状态栏的显示/隐藏
-     */
-    private void refreshStatusBarShown() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
     }
 }

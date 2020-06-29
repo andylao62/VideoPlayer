@@ -25,7 +25,7 @@ VideoOutput::~VideoOutput() {
 void *playVideoCallback(void *data) {
     VideoOutput *out = (VideoOutput *) (data);
     while (out->playStatus != NULL && !out->playStatus->isExit()) {
-        if (out->playStatus->seek) {
+        if (out->playStatus->isSeek()) {
             av_usleep(MILLI_SECOND * 100);
             continue;
         }

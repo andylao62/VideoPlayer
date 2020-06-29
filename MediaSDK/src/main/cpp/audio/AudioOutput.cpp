@@ -267,7 +267,7 @@ int AudioOutput::resample() {
         if (audio == NULL) {
             return 0;
         }
-        if (playStatus->seek) {
+        if (playStatus->isSeek()) {
             av_usleep(MILLI_SECOND * 100);
             continue;
         }

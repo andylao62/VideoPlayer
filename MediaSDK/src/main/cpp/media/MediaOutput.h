@@ -33,7 +33,7 @@ class MediaOutput {
         void stop();
         void setVolume(float percent);
         void seekByPercent(float percent);
-        void seek(int second);
+        void seek(int64_t second);
         void release();
 };
 

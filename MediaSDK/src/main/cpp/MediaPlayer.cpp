@@ -23,12 +23,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 MediaPlayerController *playerController = NULL;
 
 extern "C"
-JNIEXPORT jboolean JNICALL
-Java_com_kejunyao_media_MediaPlayer_isPlaying(JNIEnv *env, jobject thiz) {
-    return false;
-}
-
-extern "C"
 JNIEXPORT void JNICALL
 Java_com_kejunyao_media_MediaPlayer__1start(JNIEnv *env, jobject thiz) {
     if (playerController == NULL) {

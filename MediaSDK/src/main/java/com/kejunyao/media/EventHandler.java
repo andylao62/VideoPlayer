@@ -77,11 +77,8 @@ class EventHandler extends Handler {
 
     private void onPrepared(int mediaWidth, int mediaHeight) {
         MediaPlayer player = mPlayerRef.get();
-        if (player != null) {
-            player.mSurfaceViewResizer.setMediaSize(mediaWidth, mediaHeight);
-            if (player.mOnPreparedListener != null) {
-                player.mOnPreparedListener.onPrepared(mediaWidth, mediaHeight);
-            }
+        if (player != null && player.mOnPreparedListener != null) {
+            player.mOnPreparedListener.onPrepared(mediaWidth, mediaHeight);
         }
     }
 

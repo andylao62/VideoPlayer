@@ -1,8 +1,6 @@
 package com.kejunyao.media;
 
 import android.os.Looper;
-import android.view.View;
-
 import com.kejunyao.media.callback.OnCompleteListener;
 import com.kejunyao.media.callback.OnErrorListener;
 import com.kejunyao.media.callback.OnLoadListener;
@@ -34,7 +32,6 @@ public class MediaPlayer {
     }
 
     private EventHandler mEventHandler;
-    final SurfaceViewResizer mSurfaceViewResizer = new SurfaceViewResizer();
 
     public MediaPlayer() {
         Looper looper;
@@ -45,14 +42,6 @@ public class MediaPlayer {
         } else {
             mEventHandler = null;
         }
-    }
-
-    public void setResizeSurfaceViewEnabled(boolean enabled) {
-        mSurfaceViewResizer.mResizeEnabled = enabled;
-    }
-
-    public void resizeSurfaceView(View surfaceView, int targetSurfaceWidth, int sourceSurfaceHeight) {
-        mSurfaceViewResizer.resizeSurfaceView(surfaceView, targetSurfaceWidth, sourceSurfaceHeight);
     }
 
     OnPreparedListener mOnPreparedListener;
@@ -197,7 +186,5 @@ public class MediaPlayer {
     private native void _resume();
     private native void _stop();
     private native void _release();
-
-    public native boolean isPlaying();
 
 }

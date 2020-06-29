@@ -90,14 +90,6 @@ public class MediaPlayerView extends FrameLayout {
         });
     }
 
-    /**
-     * 设置当前View能否根据手机屏幕旋转，而调整View的布局及大小
-     * @param enabled true，可以自动调整；false，不能自动调整
-     */
-    public void setResizeSurfaceViewEnabled(boolean enabled) {
-        mMediaPlayer.setResizeSurfaceViewEnabled(enabled);
-    }
-
     private OnTouchListener mOnTouchListener;
     @Override
     public void setOnTouchListener(OnTouchListener l) {
@@ -159,11 +151,6 @@ public class MediaPlayerView extends FrameLayout {
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(int mediaWidth, int mediaHeight) {
-                resizeMediaView(
-                        false,
-                        getMeasuredWidth(),
-                        FrameLayout.LayoutParams.WRAP_CONTENT
-                );
                 mMediaPlayer.start();
                 showToolBarImmediately();
             }
@@ -234,29 +221,6 @@ public class MediaPlayerView extends FrameLayout {
      */
     public void pause() {
         mMediaPlayer.pause();
-    }
-
-    /**
-     * 重新设置当前View的布局及大小
-     * @param targetSurfaceWidth 期望最终的宽度
-     * @param sourceSurfaceHeight 期望最终的高度
-     */
-    public void resizeMediaView(int targetSurfaceWidth, int sourceSurfaceHeight) {
-        resizeMediaView(true, targetSurfaceWidth, sourceSurfaceHeight);
-    }
-
-    /**
-     * 重新设置当前View的布局及大小
-     * @param hideToolbar true，隐藏按钮工具栏；false，不隐藏按钮工具栏
-     * @param targetSurfaceWidth 期望最终的宽度
-     * @param sourceSurfaceHeight 期望最终的高度
-     */
-    private void resizeMediaView(boolean hideToolbar, int targetSurfaceWidth, int sourceSurfaceHeight) {
-        if (hideToolbar) {
-            mToolbar.setVisibility(INVISIBLE);
-            removeToolBarShownToggle();
-        }
-        mMediaPlayer.resizeSurfaceView(this, targetSurfaceWidth, sourceSurfaceHeight);
     }
 
     /**
