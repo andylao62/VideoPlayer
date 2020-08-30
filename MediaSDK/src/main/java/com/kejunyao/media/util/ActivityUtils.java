@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
+import android.view.View;
 
 /**
  * {@link Activity}工具类
@@ -40,5 +41,25 @@ public final class ActivityUtils {
         }
         Activity activity = getActivity(context);
         return isFinishing(activity);
+    }
+
+    /**
+     * 隐藏{@link Activity}底部虚拟菜单
+     * @param activity {@link Activity}
+     */
+    public static void hideVirtualMenu(Activity activity) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            View view = activity.getWindow().getDecorView();
+            view.setSystemUiVisibility(View.GONE);
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View decorView = activity.getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 }

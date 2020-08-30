@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.kejunyao.media.util.ActivityUtils;
 import com.kejunyao.media.util.FileUtils;
 import com.kejunyao.media.util.PermissionUtils;
 import com.kejunyao.media.widget.MediaPlayerView;
@@ -37,6 +39,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityUtils.hideVirtualMenu(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,

@@ -78,6 +78,11 @@
         android:layout_height="wrap_content"
         android:text="播放本地文件"
         android:onClick="playLocalFile"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="中央1套"
+        android:onClick="openCCTV1"/>
 
     <com.kejunyao.media.widget.MediaSurfaceView
         android:id="@+id/media_surface_view"

@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
  */
 public class MediaPlayerView extends FrameLayout {
     /** 按钮工具栏显示时间 */
-    private static final int DURATION_TOOL_BAR_SHOW = 3000;
+    private static final int DURATION_TOOL_BAR_SHOW = 3500;
 
     private final MediaPlayer mMediaPlayer = new MediaPlayer();
     /** 媒体视图播放View */
@@ -103,7 +103,7 @@ public class MediaPlayerView extends FrameLayout {
         super.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                showToolBarImmediately();
+                showOrHideToolBarImmediately();
                 return mOnTouchListener != null && mOnTouchListener.onTouch(v, event);
             }
         });
@@ -111,9 +111,14 @@ public class MediaPlayerView extends FrameLayout {
 
     private ToolBarShownToggle mToolBarShownToggle;
     /**
-     * 立即显示按钮工具栏，并且在3秒后自动消失
+     * 立即显示或隐藏按钮工具栏，若是显示则在3秒后自动隐藏
      */
-    private void showToolBarImmediately() {
+    private void showOrHideToolBarImmediately() {
+        if (mToolbar.getVisibility() == VISIBLE) {
+            mToolbar.setVisibility(INVISIBLE);
+            removeToolBarShownToggle();
+            return;
+        }
         mToolbar.setVisibility(VISIBLE);
         if (mToolBarShownToggle == null) {
             mToolBarShownToggle = new ToolBarShownToggle(this);
@@ -152,7 +157,7 @@ public class MediaPlayerView extends FrameLayout {
             @Override
             public void onPrepared(int mediaWidth, int mediaHeight) {
                 mMediaPlayer.start();
-                showToolBarImmediately();
+                showOrHideToolBarImmediately();
             }
         });
     }

@@ -158,4 +158,9 @@ public class MainActivity extends AppCompatActivity {
     public void mediaPlayerActivity(View view) {
         MediaPlayerActivity.startActivity(this, "/sdcard/jwm1972.mp4");
     }
+
+    public void openCCTV1(View view) {
+        String url = "http://39.135.135.57/wh7f454c46tw1442434107_-1407359205/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225710/index.m3u8?icpid=88888888&RTS=1596281872&from=1&hms_devid=696&vqe=3";
+        MediaPlayerActivity.startActivity(this, url);
+    }
 }

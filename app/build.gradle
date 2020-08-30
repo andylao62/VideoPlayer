@@ -24,10 +24,32 @@ android {
         }
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("regular.jks")
+            storePassword "2020aabb"
+            keyAlias "regular_2020"
+            keyPassword "regular2020aabb"
+        }
+
+        release {
+            storeFile file("regular.jks")
+            storePassword "2020aabb"
+            keyAlias "regular_2020"
+            keyPassword "regular2020aabb"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
