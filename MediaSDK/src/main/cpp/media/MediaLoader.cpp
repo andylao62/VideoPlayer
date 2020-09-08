@@ -36,15 +36,27 @@ int MediaLoader::load() {
     media->avFormatContext = avformat_alloc_context();
     media->avFormatContext->interrupt_callback.callback = avFormatCallback;
     media->avFormatContext->interrupt_callback.opaque = this;
-    if (avformat_open_input(&media->avFormatContext, media->source, NULL, NULL) != 0) {
+
+//    AVDictionary *optionsDict = NULL;
+//    if(Rtsp_Protocol == TCP) {
+//        av_dict_set(&optionsDict, "rtsp_transport", "tcp", 0); // 采用tcp传输
+//    }
+//    av_dict_set(&optionsDict, "stimeout", "5000000", 0); // 设置rtsp超时5s，单位微妙
+
+
+    int ret = avformat_open_input(&media->avFormatContext, media->source, NULL, NULL);
+    if (ret != 0) {
         if (LOG_DEBUG) {
-            LOGE("MediaLoader#load, avformat_open_input failure");
+            char msg[512];
+            av_make_error_string(msg, 512, ret);
+            LOGE("MediaLoader#load, avformat_open_input failure, ret: %d, msg: %s, source: %s", ret, msg, media->source)
         }
         return ERROR_AV_FORMAT_OPEN_INPUT;
     }
-    if (avformat_find_stream_info(media->avFormatContext, NULL) < 0) {
+    ret = avformat_find_stream_info(media->avFormatContext, NULL);
+    if (ret < 0) {
         if (LOG_DEBUG) {
-            LOGE("MediaLoader#load, avformat_find_stream_info failure");
+            LOGE("MediaLoader#load, avformat_find_stream_info failure, source: %s, ret: %d", media->source, ret)
         }
         return ERROR_AV_STREAM_FORMAT_NOT_FOUND;
     }

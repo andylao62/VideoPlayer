@@ -18,6 +18,8 @@ import com.kejunyao.media.widget.MediaSurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MediaPlayer_MainActivity";
@@ -149,17 +151,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playLocalFile(View view) {
-        mMediaPlayer.setDataSource("/sdcard/jwm1972.mp4");
+        File file = new File("/sdcard/jpt.mp4");
+        MediaLog.d(TAG, "playLocalFile, path: ", file.getAbsolutePath(), ", isOK: ", file.exists());
+        mMediaPlayer.setDataSource(file.getAbsolutePath());
         // mMediaPlayer.setDataSource("/sdcard/demo.mp4");
         // mMediaPlayer.setDataSource("/sdcard/out.mp4");
         mMediaPlayer.prepare();
     }
 
     public void mediaPlayerActivity(View view) {
-        MediaPlayerActivity.startActivity(this, "/sdcard/jwm1972.mp4");
+        MediaPlayerActivity.startActivity(this, "/sdcard/jpt.mp4");
     }
 
     public void openCCTV1(View view) {
+        // String url = "http://1253543992.vod2.myqcloud.com/9f4df62dvodcq1253543992/86b944765285890799780712280/playlist.m3u8";
         String url = "http://39.135.135.57/wh7f454c46tw1442434107_-1407359205/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225710/index.m3u8?icpid=88888888&RTS=1596281872&from=1&hms_devid=696&vqe=3";
         MediaPlayerActivity.startActivity(this, url);
     }
