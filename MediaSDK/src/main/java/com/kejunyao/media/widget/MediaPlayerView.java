@@ -9,12 +9,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kejunyao.arch.util.ActivityUtils;
 import com.kejunyao.media.MediaPlayer;
 import com.kejunyao.media.R;
 import com.kejunyao.media.callback.OnPauseResumeListener;
 import com.kejunyao.media.callback.OnPreparedListener;
 import com.kejunyao.media.callback.OnTimeInfoListener;
-import com.kejunyao.media.util.ActivityUtils;
 import com.kejunyao.media.util.TimeUtils;
 import java.lang.ref.WeakReference;
 

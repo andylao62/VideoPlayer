@@ -9,9 +9,8 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.kejunyao.media.util.ActivityUtils;
-import com.kejunyao.media.util.FileUtils;
+import com.kejunyao.arch.file.FileUtils;
+import com.kejunyao.arch.util.ActivityUtils;
 import com.kejunyao.media.util.PermissionUtils;
 import com.kejunyao.media.widget.MediaPlayerView;
 import androidx.annotation.NonNull;
