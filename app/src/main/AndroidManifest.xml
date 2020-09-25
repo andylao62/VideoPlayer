@@ -23,6 +23,7 @@
         <activity android:name="com.kejunyao.media.MediaPlayerActivity"
             android:theme="@style/MediaPlayerTheme"
             android:launchMode="standard"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 

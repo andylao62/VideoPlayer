@@ -29,6 +29,8 @@ public class MediaPlayerView extends FrameLayout {
     private static final int DURATION_TOOL_BAR_SHOW = 3500;
 
     private final MediaPlayer mMediaPlayer = new MediaPlayer();
+    /** 播放器标题栏 */
+    private PlayerTitleBar mTitleBar;
     /** 媒体视图播放View */
     private MediaSurfaceView mMediaSurfaceView;
     /** 按钮工具类 */
@@ -64,6 +66,7 @@ public class MediaPlayerView extends FrameLayout {
      */
     private void init() {
         inflate(getContext(), R.layout.media_player_view, this);
+        mTitleBar = findViewById(R.id.title_bar);
         mMediaSurfaceView = findViewById(R.id.media_surface_view);
         mMediaPlayer.setSurfaceView(mMediaSurfaceView);
         mToolbar = findViewById(R.id.media_tool_bar);
@@ -114,11 +117,15 @@ public class MediaPlayerView extends FrameLayout {
      * 立即显示或隐藏按钮工具栏，若是显示则在3秒后自动隐藏
      */
     private void showOrHideToolBarImmediately() {
+        if (mTitleBar.getVisibility() == VISIBLE) {
+            mTitleBar.setVisibility(INVISIBLE);
+        }
         if (mToolbar.getVisibility() == VISIBLE) {
             mToolbar.setVisibility(INVISIBLE);
             removeToolBarShownToggle();
             return;
         }
+        mTitleBar.setVisibility(VISIBLE);
         mToolbar.setVisibility(VISIBLE);
         if (mToolBarShownToggle == null) {
             mToolBarShownToggle = new ToolBarShownToggle(this);
@@ -268,6 +275,9 @@ public class MediaPlayerView extends FrameLayout {
             MediaPlayerView playerView = reference.get();
             if (playerView == null || ActivityUtils.isFinishing(playerView.getContext())) {
                 return;
+            }
+            if (playerView.mTitleBar != null) {
+                playerView.mTitleBar.setVisibility(INVISIBLE);
             }
             if (playerView.mToolbar != null) {
                 playerView.mToolbar.setVisibility(INVISIBLE);

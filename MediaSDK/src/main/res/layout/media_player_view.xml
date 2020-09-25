@@ -10,6 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.kejunyao.media.widget.PlayerTitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/player_title_height"
+        android:background="@drawable/bg_player_title_bar"
+        android:layout_gravity="top"/>
+
     <FrameLayout
         android:id="@+id/media_tool_bar"
         android:layout_width="match_parent"
@@ -22,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="12dp"
             android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/medial_tool_bar_margin"
+            android:layout_marginLeft="@dimen/media_tool_bar_margin"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="00:00"
@@ -34,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="12dp"
             android:layout_gravity="right"
-            android:layout_marginRight="@dimen/medial_tool_bar_margin"
+            android:layout_marginRight="@dimen/media_tool_bar_margin"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="00:00"
@@ -45,9 +52,9 @@
             android:id="@+id/play_progress_seek_bar"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="@dimen/medial_tool_bar_margin"
+            android:layout_marginLeft="@dimen/media_tool_bar_margin"
             android:layout_marginTop="12dp"
-            android:layout_marginRight="@dimen/medial_tool_bar_margin"
+            android:layout_marginRight="@dimen/media_tool_bar_margin"
             android:max="100" />
 
         <TextView
@@ -55,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/medial_tool_bar_margin"
+            android:layout_marginLeft="@dimen/media_tool_bar_margin"
             android:layout_marginTop="42dp"
             android:gravity="center_vertical"
             android:text="@string/play"

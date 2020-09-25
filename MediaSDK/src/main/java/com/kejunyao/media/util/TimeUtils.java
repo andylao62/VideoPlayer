@@ -1,5 +1,9 @@
 package com.kejunyao.media.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * 时间工具类
  *
@@ -41,5 +45,15 @@ public final class TimeUtils {
         }
         sb.append(seconds);
         return sb.toString();
+    }
+
+    /**
+     * 获取当前系统时间
+     * @return 当前系统时间（格式：HH:mm）
+     */
+    public static String getCurrentSystemTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        Date date = new Date();
+        return simpleDateFormat.format(date);
     }
 }

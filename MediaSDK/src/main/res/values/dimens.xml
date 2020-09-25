@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="medial_tool_bar_margin">15dp</dimen>
+    <dimen name="media_tool_bar_margin">15dp</dimen>
+
+    <dimen name="player_title_height">46dp</dimen>
+    <dimen name="player_title_text_size">16dp</dimen>
+    <dimen name="player_title_system_text_size">12dp</dimen>
+    <dimen name="player_title_icon_padding">12dp</dimen>
 </resources>

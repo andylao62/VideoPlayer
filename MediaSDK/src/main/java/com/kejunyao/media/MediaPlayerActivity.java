@@ -44,7 +44,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         );
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_media_player);
         mMediaPlayerView = findViewById(R.id.media_player_view);
         mSource = getIntent().getStringExtra(PARAM_SOURCE);
